@@ -24,6 +24,7 @@ public class FirstPersonScript : MonoBehaviour {
 	GravityOnNormals gravityOnNormals;
 
 
+
 	// Use this for initialization
 	void Start () {
 		// get gravity script
@@ -32,8 +33,13 @@ public class FirstPersonScript : MonoBehaviour {
 		// set up the camera rotator
 		playerCamera = GameObject.FindWithTag ("MainCamera");
 		cameraRotator.Setup (playerCamera.transform,transform);
+
+		// lock and hid the mouse
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
 	}
-	
+
+
 	// Update is called once per frame
 	void Update () {
 		
@@ -44,6 +50,11 @@ public class FirstPersonScript : MonoBehaviour {
 		// call or set anything that needs to be done while holding an object
 		if (objectPickedUp) {
 			liftObject.transform.rotation = gameObject.transform.rotation;
+		}
+
+		// set the cursor lockstate to locked if it is not locked
+		if (!(Cursor.lockState == CursorLockMode.Locked)) {
+			Cursor.lockState = CursorLockMode.Locked;
 		}
 
 		// check if the player has pressed a button to interact
@@ -60,6 +71,7 @@ public class FirstPersonScript : MonoBehaviour {
 		}
 	}
 
+
 	// fuction to move
 	void move()
 	{
@@ -70,6 +82,7 @@ public class FirstPersonScript : MonoBehaviour {
 		// translate the player acording to the horizontal and vertical axis
 		transform.Translate(new Vector3(horizontal * speed * Time.deltaTime, 0, vertical * speed * Time.deltaTime));
 	}
+
 
 	// function to lift object
 	void liftObjects (){
@@ -99,6 +112,7 @@ public class FirstPersonScript : MonoBehaviour {
 			}
 		}
 	}
+
 
 	// fuction to drop object
 	void dropObject (){
