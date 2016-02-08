@@ -5,7 +5,7 @@ using System.Collections;
 public class GravityOnNormals : MonoBehaviour {
 
 	Rigidbody playerRigidbody;
-	RaycastHit lasthit;
+//	RaycastHit lasthit;
 	public Vector3 currentDirection;
 	Vector3 lasthitDirection;
 	public float gravity = 5f;
@@ -20,7 +20,7 @@ public class GravityOnNormals : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerRigidbody = GetComponent<Rigidbody>();
-		lasthitDirection = Vector3.up;
+		currentDirection = Vector3.up;
 		Physics.Raycast(gameObject.transform.position,Vector3.down,out raycastHit);
 	}
 
@@ -64,15 +64,15 @@ public class GravityOnNormals : MonoBehaviour {
 			}
 		}
 		if (!(raycastHit.distance == 1001) && raycastHit.transform.gameObject) {
+			lasthitDirection = currentDirection;
 			currentDirection = raycastHit.normal;
-			lasthitDirection = lasthit.normal;
 			playerRigidbody.MovePosition (transform.position - (currentDirection * Time.deltaTime * gravity));
 		}
 		if (lasthitDirection != currentDirection) {
 			//Debug.Log (raycastHitDirection);
 			//Debug.Log (raycastHit.distance);
 			Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
-			lasthit = raycastHit;
+//			lasthit = raycastHit;
 		}
 	}
 //	void OnCollisionEnter(Collision collision) {
