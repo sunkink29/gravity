@@ -10,8 +10,6 @@ public class CubeController : MonoBehaviour {
 	CubeSpringSettings cubeControllerSettings;
 	SpringJoint springJoint;
 	bool objectPickedUp = false;
-	BoxCollider triggerCollider;
-	Vector3 lastPosition;
 	FirstPersonScript playerScript;
 	Transform playerCamera;
 
@@ -24,11 +22,7 @@ public class CubeController : MonoBehaviour {
 			objectRigidbody = GetComponent<Rigidbody> ();
 		}
 		gameObject.tag = "liftable";
-		triggerCollider = gameObject.AddComponent<BoxCollider> ();
 		objectRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-		triggerCollider.isTrigger = true;
-		triggerCollider.center = Vector3.Scale(transform.InverseTransformDirection(Vector3.down),new Vector3(1,.5f/transform.lossyScale.y,1));
-		triggerCollider.size = new Vector3 (.5f, .5f, .5f);
 	}
 
 	void FixedUpdate () {
@@ -71,7 +65,6 @@ public class CubeController : MonoBehaviour {
 
 	void gravity () {
 		objectRigidbody.AddForce ( gravityStrenth * gravityDirection * -1 * Time.fixedTime,ForceMode.Acceleration);
-		lastPosition = transform.position;
 	}
 
 	public void pickUpObject (FirstPersonScript player) {
@@ -107,19 +100,19 @@ public class CubeController : MonoBehaviour {
 		gameObject.layer = 1;
 	}
 
-	void OnTriggerEnter () {
+	void OnCollisionEnter(Collision collision) {
 		if (!objectPickedUp) {
-			RaycastHit hit;
-			Vector3 heading = lastPosition - transform.position;
-			float distance = heading.magnitude;
-			Vector3 direction = heading / distance;
-			if (objectRigidbody.SweepTest (direction, out hit, distance)) {
-				transform.position = lastPosition;
-				transform.position += direction * (distance - hit.distance);
+			bool foundFloor = false;
+			for (int i = 0; i != collision.contacts.GetLength (0) - 1; i++) {
+				Debug.Log (collision.contacts [i].normal);
+				if (collision.contacts [i].normal == gravityDirection) {
+					foundFloor = true;
+					break;
+				}
 			}
-			objectRigidbody.isKinematic = true;
+			if (foundFloor) {
+				objectRigidbody.isKinematic = true;
+			}
 		}
-
-
 	}
 }
