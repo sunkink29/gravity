@@ -20,18 +20,6 @@ public class FirstPersonScript : MonoBehaviour {
 		playerCamera = GameObject.FindWithTag ("MainCamera");
 		cameraRotator.Setup (playerCamera.transform,transform);
 	}
-
-	void FixedUpdate () {
-		if (objectPickedUp) {
-//			Vector3 heading = playerCamera.transform.position + playerCamera.transform.forward * distanceFromObject - liftObjectScript.objectRigidbody.position;
-//			float distance = heading.magnitude;
-//			if (distance > origialDistance) {
-//				origialDistance = distance;
-//			}
-//			Vector3 direction = heading / distance;
-//			liftObjectScript.objectRigidbody.AddForce (direction * 5 * (distance/origialDistance), ForceMode.Acceleration);
-		}
-	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -40,21 +28,6 @@ public class FirstPersonScript : MonoBehaviour {
 
 		if (objectPickedUp) {
 			liftObject.transform.rotation = gameObject.transform.rotation;
-
-//			if (liftObject.transform.position == (playerCamera.transform.position + playerCamera.transform.forward * distanceFromObject)) {
-//				liftObjectScript.objectRigidbody.velocity = Vector3.zero;
-//				liftObjectScript.objectRigidbody.angularVelocity = Vector3.zero;
-//				liftObjectScript.objectRigidbody.Sleep ();
-//				origialDistance = 0;
-//			}
-
-//			RaycastHit hit;
-//			liftObject.transform.position = playerCamera.transform.position + playerCamera.transform.up * .5f;
-//			if (liftObject.GetComponent<Rigidbody> ().SweepTest (playerCamera.transform.forward, out hit, distanceFromObject)) {
-//				liftObject.transform.position += playerCamera.transform.forward * hit.distance;
-//			} else {
-//				liftObject.transform.position += playerCamera.transform.forward * distanceFromObject;
-//			}
 		}
 
 		if (Input.GetButtonDown ("Interact")) {
@@ -83,7 +56,6 @@ public class FirstPersonScript : MonoBehaviour {
 			liftObjectScript = liftObject.GetComponent<CubeController> ();
 			if (liftObjectScript.gravityDirection == gravityOnNormals.currentDirection) {
 				liftObjectScript.useGravity = false;
-//				liftObject.transform.parent = playerCamera.transform;
 				objectPickedUp = true;
 				liftObjectScript.pickUpObject (this);
 			}
@@ -92,7 +64,6 @@ public class FirstPersonScript : MonoBehaviour {
 
 	void dropObject (){
 		liftObject.GetComponent<CubeController> ().useGravity = true;
-//		liftObject.transform.parent = DynamicObjects.transform;
 		objectPickedUp = false;
 		liftObject.GetComponent<CubeController> ().dropObject ();
 		liftObject.GetComponent<CubeController> ().gravityDirection = gravityOnNormals.currentDirection;
