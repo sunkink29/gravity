@@ -10,4 +10,5 @@ public class CubeSpringSettings {
 	public float rigidbodyDrag = 15;
 	public float rigidbodyAnglarDrag = 15;
 	public float force = 15;
+	public float angleSpeed = 10;
 }

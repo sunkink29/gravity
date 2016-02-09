@@ -44,6 +44,10 @@ public class CubeController : MonoBehaviour {
 			float distance = heading.magnitude;
 			Vector3 direction = heading / distance;
 			objectRigidbody.AddForce (direction * cubeControllerSettings.force * distance, ForceMode.Acceleration);
+
+			Quaternion newQuaternion = Quaternion.FromToRotation ( transform.up,gravityDirection) * transform.rotation;
+			transform.rotation = Quaternion.Slerp (transform.rotation, newQuaternion, cubeControllerSettings.angleSpeed * Time.deltaTime);
+
 			if (springJoint.maxDistance != cubeControllerSettings.distanceFromObject) {
 				springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
 				springJoint.minDistance = cubeControllerSettings.distanceFromObject;

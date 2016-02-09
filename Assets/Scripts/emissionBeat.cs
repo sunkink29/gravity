@@ -19,7 +19,7 @@ public class emissionBeat : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (count == 2) {
-			float emission =(Mathf.PingPong (Time.time * .5f, 0.5f) * 1f) + 0.5f;
+			float emission =(Mathf.PingPong (Time.time * .5f, 0.5f) * .5f) + 0;
 			Vector3 color = playerGravity.currentDirection * 0.5f + new Vector3 (0.5f, 0.5f, 0.5f);
 			Color baseColor = //Color.cyan
 				new Vector4 (color.x, color.y, color.z, 1); //Replace this with whatever you want for your base color at emission level '1'

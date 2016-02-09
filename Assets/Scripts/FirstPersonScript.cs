@@ -23,6 +23,9 @@ public class FirstPersonScript : MonoBehaviour {
 	// the script for the script that controls the gravity for the player
 	GravityOnNormals gravityOnNormals;
 
+	// A light on the player to light up the area
+	Light spotlight;
+
 
 
 	// Use this for initialization
@@ -37,6 +40,9 @@ public class FirstPersonScript : MonoBehaviour {
 		// lock and hid the mouse
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
+
+		// get the spot light
+		spotlight = GameObject.FindGameObjectWithTag("spot light").GetComponent<Light>();
 	}
 
 
@@ -49,12 +55,18 @@ public class FirstPersonScript : MonoBehaviour {
 
 		// call or set anything that needs to be done while holding an object
 		if (objectPickedUp) {
-			liftObject.transform.rotation = gameObject.transform.rotation;
+			if (liftObjectScript.gravityDirection != gravityOnNormals.currentDirection) {
+				liftObjectScript.gravityDirection = gravityOnNormals.currentDirection;
+			}
 		}
 
 		// set the cursor lockstate to locked if it is not locked
 		if (!(Cursor.lockState == CursorLockMode.Locked)) {
 			Cursor.lockState = CursorLockMode.Locked;
+		}
+
+		if (Input.GetButtonDown ("Toggle Light")) {
+			spotlight.gameObject.SetActive (!spotlight.gameObject.activeInHierarchy);
 		}
 
 		// check if the player has pressed a button to interact
