@@ -45,9 +45,6 @@ public class CubeController : MonoBehaviour {
 			Vector3 direction = heading / distance;
 			objectRigidbody.AddForce (direction * cubeControllerSettings.force * distance, ForceMode.Acceleration);
 
-			Quaternion newQuaternion = Quaternion.FromToRotation ( transform.up,gravityDirection) * transform.rotation;
-			transform.rotation = Quaternion.Slerp (transform.rotation, newQuaternion, cubeControllerSettings.angleSpeed * Time.deltaTime);
-
 			if (springJoint.maxDistance != cubeControllerSettings.distanceFromObject) {
 				springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
 				springJoint.minDistance = cubeControllerSettings.distanceFromObject;
@@ -108,8 +105,7 @@ public class CubeController : MonoBehaviour {
 		if (!objectPickedUp) {
 			bool foundFloor = false;
 			for (int i = 0; i != collision.contacts.GetLength (0) - 1; i++) {
-				Debug.Log (collision.contacts [i].normal);
-				if (collision.contacts [i].normal == gravityDirection) {
+					if (collision.contacts [i].normal == gravityDirection) {
 					foundFloor = true;
 					break;
 				}

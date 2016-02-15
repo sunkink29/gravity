@@ -55,9 +55,7 @@ public class FirstPersonScript : MonoBehaviour {
 
 		// call or set anything that needs to be done while holding an object
 		if (objectPickedUp) {
-			if (liftObjectScript.gravityDirection != gravityOnNormals.currentDirection) {
-				liftObjectScript.gravityDirection = gravityOnNormals.currentDirection;
-			}
+			liftObject.transform.rotation = transform.rotation;
 		}
 
 		// set the cursor lockstate to locked if it is not locked
