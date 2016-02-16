@@ -65,6 +65,12 @@ public class CubeController : MonoBehaviour {
 	}
 
 	void gravity () {
+		RaycastHit hitInfo;
+		Physics.Raycast (transform.position, gravityDirection * -1, out hitInfo);
+		if (hitInfo.distance <= .1f + .5f) {
+			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+			objectRigidbody.isKinematic = true;
+		}
 		objectRigidbody.AddForce ( gravityStrenth * gravityDirection * -1 * Time.fixedTime,ForceMode.Acceleration);
 	}
 
@@ -101,18 +107,4 @@ public class CubeController : MonoBehaviour {
 		gameObject.layer = 1;
 	}
 
-	void OnCollisionEnter(Collision collision) {
-		if (!objectPickedUp) {
-			bool foundFloor = false;
-			for (int i = 0; i != collision.contacts.GetLength (0) - 1; i++) {
-					if (collision.contacts [i].normal == gravityDirection) {
-					foundFloor = true;
-					break;
-				}
-			}
-			if (foundFloor) {
-				objectRigidbody.isKinematic = true;
-			}
-		}
-	}
 }
