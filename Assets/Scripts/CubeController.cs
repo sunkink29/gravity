@@ -23,6 +23,7 @@ public class CubeController : MonoBehaviour {
 		}
 		gameObject.tag = "liftable";
 		objectRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+		objectRigidbody.useGravity = false;
 	}
 
 	void FixedUpdate () {
@@ -68,6 +69,18 @@ public class CubeController : MonoBehaviour {
 		RaycastHit hitInfo;
 		Physics.Raycast (transform.position, gravityDirection * -1, out hitInfo);
 		if (hitInfo.distance <= .1f + .5f) {
+			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+			objectRigidbody.isKinematic = true;
+		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+			objectRigidbody.isKinematic = true;
+		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+			objectRigidbody.isKinematic = true;
+		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+			objectRigidbody.isKinematic = true;
+		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
 			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
 			objectRigidbody.isKinematic = true;
 		}
