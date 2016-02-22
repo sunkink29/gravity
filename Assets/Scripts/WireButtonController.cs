@@ -13,6 +13,8 @@ public class WireButtonController : MonoBehaviour , Powerable {
 	float emission = 0;
 	public float maxEmission = 1;
 	[SerializeField] bool isPowered;
+	public GameObject connectedObject;
+	Powerable connectedObjectScript;
 
 	// Use this for initialization
 	void Start () {
@@ -23,6 +25,7 @@ public class WireButtonController : MonoBehaviour , Powerable {
 		if (Application.isEditor) {
 			StartCoroutine (checkIfPowered ());
 		}
+		connectedObjectScript = connectedObject.GetComponent<Powerable> ();
 	}
 
 	void OnTriggerEnter (Collider collider) {
@@ -64,19 +67,29 @@ public class WireButtonController : MonoBehaviour , Powerable {
 	}
 
 	public void powerOn (){
-		isPowered = true;
-		StopCoroutine (changeValue ());
-		startEmission = emission;
-		endEmission = maxEmission;
-		StartCoroutine (changeValue ());
+		if (!isPowered) {
+			isPowered = true;
+			StopCoroutine (changeValue ());
+			startEmission = emission;
+			endEmission = maxEmission;
+			StartCoroutine (changeValue ());
+			if (connectedObjectScript != null) {
+				connectedObjectScript.powerOn ();
+			}
+		}
 	}
 
 	public void powerOff (){
-		isPowered = false;
-		StopCoroutine (changeValue ());
-		startEmission = emission;
-		endEmission = 0;
-		StartCoroutine (changeValue ());
+		if (isPowered) {
+			isPowered = false;
+			StopCoroutine (changeValue ());
+			startEmission = emission;
+			endEmission = 0;
+			StartCoroutine (changeValue ());
+			if (connectedObjectScript != null) {
+				connectedObjectScript.powerOff ();
+			}
+		}
 	}
 
 }
