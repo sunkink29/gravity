@@ -16,12 +16,14 @@ public class GravityOnNormals : MonoBehaviour {
 	RaycastHit raycastHit;
 	Vector3 pickupDirection;
 	Vector3 pickupDownDirection;
+	FirstPersonScript attachedPlayer;
 
 	// Use this for initialization
 	void Start () {
 		playerRigidbody = GetComponent<Rigidbody>();
 		currentDirection = Vector3.up;
 		Physics.Raycast(gameObject.transform.position,Vector3.down,out raycastHit);
+		attachedPlayer = GetComponent<FirstPersonScript> ();
 	}
 
 	void FixedUpdate ()
@@ -66,6 +68,11 @@ public class GravityOnNormals : MonoBehaviour {
 		if (!(raycastHit.distance == 1001) && raycastHit.transform.gameObject) {
 			lasthitDirection = currentDirection;
 			currentDirection = raycastHit.normal;
+			if (!(lasthitDirection.Equals (currentDirection))) {
+				attachedPlayer.rotatePlayer = false;
+			} else {
+				attachedPlayer.rotatePlayer = true;
+			}
 			playerRigidbody.MovePosition (transform.position - (currentDirection * Time.deltaTime * gravity));
 		}
 		if (lasthitDirection != currentDirection) {

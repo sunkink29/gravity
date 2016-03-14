@@ -26,6 +26,8 @@ public class FirstPersonScript : MonoBehaviour {
 	// A light on the player to light up the area
 	Light spotlight;
 
+	public bool rotatePlayer = true;
+
 
 
 	// Use this for initialization
@@ -51,7 +53,10 @@ public class FirstPersonScript : MonoBehaviour {
 		
 		// call the move and rotate helper fuctions
 		move ();
-		cameraRotator.rotate ();
+
+		if (rotatePlayer) {
+			cameraRotator.rotate ();
+		}
 
 		// call or set anything that needs to be done while holding an object
 		if (objectPickedUp) {
