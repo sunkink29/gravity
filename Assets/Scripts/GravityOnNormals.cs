@@ -9,7 +9,7 @@ public class GravityOnNormals : MonoBehaviour {
 	public Vector3 currentDirection;
 	Vector3 lasthitDirection;
 	public float gravity = 5f;
-	public float angleSpeed = 10;
+	public float angleSpeed = 0.5f;
 	bool disableXRotation = false;
 	Vector3 lastRotation;
 	[SerializeField] bool disableAutoRotate = false;
@@ -17,11 +17,17 @@ public class GravityOnNormals : MonoBehaviour {
 	Vector3 pickupDirection;
 	Vector3 pickupDownDirection;
 	FirstPersonScript attachedPlayer;
+	Quaternion lastrotation;
+	float pointInRotation = 0;
+	bool resetPointInRotation = false;
 
 	// Use this for initialization
 	void Start () {
 		playerRigidbody = GetComponent<Rigidbody>();
 		currentDirection = Vector3.up;
+		lasthitDirection = currentDirection;
+		lastrotation = Quaternion.FromToRotation (transform.up, lasthitDirection);
+
 		Physics.Raycast(gameObject.transform.position,Vector3.down,out raycastHit);
 		attachedPlayer = GetComponent<FirstPersonScript> ();
 	}
@@ -47,10 +53,19 @@ public class GravityOnNormals : MonoBehaviour {
 	}
 
 	void rotate (){
-		Quaternion newQuaternion = Quaternion.FromToRotation ( transform.up,currentDirection) * transform.rotation;
+		Quaternion targetQuaternion = Quaternion.FromToRotation ( transform.up,currentDirection) * transform.rotation;
+		if (resetPointInRotation)
+			pointInRotation = 0;
+		resetPointInRotation = false;
 		if (disableXRotation)
-			newQuaternion.eulerAngles = new Vector3(lastRotation.x,lastRotation.y,newQuaternion.eulerAngles.z);
-		transform.rotation = Quaternion.Slerp (transform.rotation, newQuaternion, angleSpeed * Time.deltaTime);
+			targetQuaternion.eulerAngles = new Vector3(lastRotation.x,lastRotation.y,targetQuaternion.eulerAngles.z);
+		if (pointInRotation + angleSpeed * Time.deltaTime <= 1) {
+			pointInRotation += angleSpeed * Time.deltaTime;
+		} else if (pointInRotation + angleSpeed * Time.deltaTime >= 1) {
+			pointInRotation = 1;
+		}
+//		lastrotation.eulerAngles = new Vector3 (lastrotation.eulerAngles.x,transform.rotation.eulerAngles.y,lastrotation.eulerAngles.z);
+		transform.rotation = Quaternion.Slerp (lastrotation, targetQuaternion, pointInRotation);
 	}
 	
 	void usePlayerGravity ()
@@ -76,6 +91,8 @@ public class GravityOnNormals : MonoBehaviour {
 			playerRigidbody.MovePosition (transform.position - (currentDirection * Time.deltaTime * gravity));
 		}
 		if (lasthitDirection != currentDirection) {
+			resetPointInRotation = true;
+			lastrotation = transform.localRotation;
 			//Debug.Log (raycastHitDirection);
 			//Debug.Log (raycastHit.distance);
 			Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);

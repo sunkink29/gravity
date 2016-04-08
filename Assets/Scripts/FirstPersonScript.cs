@@ -32,6 +32,7 @@ public class FirstPersonScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		Application.targetFrameRate = 20;
 		// get gravity script
 		gravityOnNormals = GetComponent<GravityOnNormals> ();
 
