@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class FirstPersonScript : MonoBehaviour {
 
@@ -28,6 +29,8 @@ public class FirstPersonScript : MonoBehaviour {
 
 	public bool rotatePlayer = true;
 
+	public bool debug = false;
+
 
 
 	// Use this for initialization
@@ -53,7 +56,7 @@ public class FirstPersonScript : MonoBehaviour {
 	void Update () {
 		
 		// call the move and rotate helper fuctions
-		move ();
+//		move ();
 
 		if (rotatePlayer) {
 			cameraRotator.rotate ();
@@ -87,16 +90,49 @@ public class FirstPersonScript : MonoBehaviour {
 		}
 	}
 
+	void FixedUpdate() {
+		move ();
+	}
+
 
 	// fuction to move
 	void move()
 	{
 		// get the horizontal and vertical axis inputs
-		float horizontal = Input.GetAxis ("Horizontal");
-		float vertical = Input.GetAxis ("Vertical");
+		float horizontal = CrossPlatformInputManager.GetAxis ("Horizontal");
+		float vertical = CrossPlatformInputManager.GetAxis ("Vertical");
+		Vector3 movement = new Vector3 (horizontal * speed * Time.fixedDeltaTime, 0, vertical * speed * Time.fixedDeltaTime);
+		float magnitude = movement.magnitude;
+		Vector3 direction = movement / magnitude;
+		direction = transform.TransformDirection (direction);
+
+		RaycastHit hitInfo;
+		CapsuleCollider collider = GetComponent<CapsuleCollider> ();
+		Vector3 point1 = new Vector3();
+		point1.y = 0 - 0.5f * collider.height + 0.2f;
+		point1 = transform.TransformPoint (point1);
+		bool hit = Physics.Raycast(point1, direction, out hitInfo/*, magnitude + collider.radius*/);
+
+		if (hit) {
+			float angle = Vector3.Angle (direction, -hitInfo.normal);
+			if (debug) {
+				Debug.Log ("hit;" + angle + ";" + hitInfo.distance + ";" + Mathf.Abs (Mathf.Cos (angle) * hitInfo.distance) + ";" + (magnitude + collider.radius));
+			}
+			if (angle > 90) {
+				angle -= 180;
+			}
+			if (Mathf.Abs(hitInfo.distance * Mathf.Cos(angle)) <= magnitude + collider.radius) {
+				direction += hitInfo.normal;
+				direction = transform.InverseTransformDirection (direction);
+				movement = direction * magnitude;
+			}
+		}
+		if (debug) {
+			Debug.DrawLine (point1, point1 + direction * 7);
+		}
 
 		// translate the player acording to the horizontal and vertical axis
-		transform.Translate(new Vector3(horizontal * speed * Time.deltaTime, 0, vertical * speed * Time.deltaTime));
+		transform.Translate(movement);
 	}
 
 

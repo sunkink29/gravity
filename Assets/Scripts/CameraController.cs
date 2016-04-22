@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections;
+using UnityStandardAssets.CrossPlatformInput;
 
 [Serializable]
 public class limitCameraRotation
@@ -35,8 +36,8 @@ public class CameraController {
 		characterTargetRot = playerTransform.localRotation;
 		cameraTargetRot = cameraTransform.localRotation;
 
-		float xRot = horizontalSensitivity * Input.GetAxis ("Mouse X");
-		float yRot = verticalSensitivity * Input.GetAxis ("Mouse Y");
+		float xRot = horizontalSensitivity * CrossPlatformInputManager.GetAxis ("Mouse X");
+		float yRot = verticalSensitivity * CrossPlatformInputManager.GetAxis ("Mouse Y");
 
 		characterTargetRot *= Quaternion.Euler (0f, xRot, 0f);
 		cameraTargetRot *= Quaternion.Euler (-yRot, 0f, 0f);
