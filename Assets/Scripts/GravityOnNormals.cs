@@ -14,8 +14,6 @@ public class GravityOnNormals : MonoBehaviour {
 	Vector3 lastRotation;
 	[SerializeField] bool disableAutoRotate = false;
 	RaycastHit raycastHit;
-	Vector3 pickupDirection;
-	Vector3 pickupDownDirection;
 	FirstPersonScript attachedPlayer;
 	Quaternion lastrotation;
 	float pointInRotation = 0;
@@ -24,17 +22,13 @@ public class GravityOnNormals : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerRigidbody = GetComponent<Rigidbody>();
-		currentDirection = Vector3.up;
-		lasthitDirection = currentDirection;
-		lastrotation = Quaternion.FromToRotation (transform.up, lasthitDirection);
-
-		Physics.Raycast(gameObject.transform.position,Vector3.down,out raycastHit);
+//		currentDirection = Vector3.up;
 		attachedPlayer = GetComponent<FirstPersonScript> ();
 	}
 
 	void FixedUpdate ()
 	{
-		usePlayerGravity ();
+		useGravity ();
 	}
 
 	// Update is called once per frame
@@ -56,15 +50,19 @@ public class GravityOnNormals : MonoBehaviour {
 		Quaternion targetQuaternion = Quaternion.FromToRotation ( transform.up,currentDirection) * transform.rotation;
 		if (resetPointInRotation)
 			pointInRotation = 0;
+		
 		resetPointInRotation = false;
+
 		if (disableXRotation)
 			targetQuaternion.eulerAngles = new Vector3(lastRotation.x,lastRotation.y,targetQuaternion.eulerAngles.z);
+		
 		if (pointInRotation + angleSpeed * Time.deltaTime <= 1) {
 			pointInRotation += angleSpeed * Time.deltaTime;
+
 		} else if (pointInRotation + angleSpeed * Time.deltaTime >= 1) {
 			pointInRotation = 1;
 		}
-//		lastrotation.eulerAngles = new Vector3 (lastrotation.eulerAngles.x,transform.rotation.eulerAngles.y,lastrotation.eulerAngles.z);
+
 		transform.rotation = Quaternion.Slerp (lastrotation, targetQuaternion, pointInRotation);
 	}
 	
@@ -73,7 +71,7 @@ public class GravityOnNormals : MonoBehaviour {
 		RaycastHit[] allHits;
 		float minDistance = 1000;
 		allHits = Physics.RaycastAll (transform.position, transform.up * -1);
-		//raycastHit.distance = 1001;
+//		raycastHit.distance = 1001;
 		for (int i = 0; i < allHits.Length; i++) {
 			if (allHits [i].distance < minDistance) {
 				minDistance = allHits [i].distance;
@@ -85,21 +83,42 @@ public class GravityOnNormals : MonoBehaviour {
 			currentDirection = raycastHit.normal;
 			if (!(lasthitDirection.Equals (currentDirection))) {
 				attachedPlayer.rotatePlayer = false;
+				Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
 			} else {
 				attachedPlayer.rotatePlayer = true;
 			}
-			playerRigidbody.MovePosition (transform.position - (currentDirection * Time.deltaTime * gravity));
+
+			playerRigidbody.MovePosition (transform.position - (currentDirection * Time.fixedDeltaTime * gravity));
 		}
 		if (lasthitDirection != currentDirection) {
 			resetPointInRotation = true;
 			lastrotation = transform.localRotation;
 			//Debug.Log (raycastHitDirection);
 			//Debug.Log (raycastHit.distance);
-			Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
 //			lasthit = raycastHit;
 		}
 	}
-//	void OnCollisionEnter(Collision collision) {
-//	
-//	}
+
+	void useGravity () {
+		RaycastHit hitInfo;
+		bool hit = Physics.Raycast (transform.position, transform.up * -1, out hitInfo);
+
+		attachedPlayer.rotatePlayer = true;
+		if (hit) {
+			lasthitDirection = currentDirection;
+			currentDirection = hitInfo.normal;
+
+			if (lasthitDirection != currentDirection) {
+				attachedPlayer.rotatePlayer = false;
+				resetPointInRotation = true;
+				lastrotation = transform.localRotation;
+				Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
+			}
+
+			playerRigidbody.AddForce (-currentDirection * gravity, ForceMode.Impulse);
+		} else {
+			currentDirection = new Vector3 ();
+		}
+			
+	}
 }
