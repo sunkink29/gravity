@@ -9,7 +9,7 @@ public class FirstPersonScript : MonoBehaviour {
 	[SerializeField] private CameraController cameraRotator = new CameraController();
 
 	// the speed that the player moves at in units per second
-	[SerializeField] float speed = 15;
+	public float speed = 15;
 
 	// the settings for the cube's spring
 	[SerializeField] public CubeSpringSettings cubeControllerSetting = new CubeSpringSettings();
@@ -22,20 +22,17 @@ public class FirstPersonScript : MonoBehaviour {
 	CubeController liftObjectScript;
 
 	// the script for the script that controls the gravity for the player
-	GravityOnNormals gravityOnNormals;
+	public GravityOnNormals gravityOnNormals;
 
 	// A light on the player to light up the area
 	Light spotlight;
 
 	public bool rotatePlayer = true;
-
 	public bool debug = false;
-
 	Rigidbody playerRigidbody;
-
 	public bool disableMovement = false;
-
-
+	public static FirstPersonScript player;
+	public bool noClipEnabled = false;
 
 	// Use this for initialization
 	void Start () {
@@ -57,6 +54,8 @@ public class FirstPersonScript : MonoBehaviour {
 		spotlight = GameObject.FindGameObjectWithTag("spot light").GetComponent<Light>();
 
 		playerRigidbody = GetComponent<Rigidbody> ();
+
+		player = this;
 	}
 
 
@@ -103,6 +102,15 @@ public class FirstPersonScript : MonoBehaviour {
 				dropObject ();
 			}
 		}
+
+		if (noClipEnabled && Input.GetMouseButtonDown (0)) {
+			RaycastHit hitInfo;
+			bool hit = Physics.Raycast (playerCamera.transform.position, playerCamera.transform.forward, out hitInfo);
+
+			if (hit) {
+				gravityOnNormals.currentDirection = hitInfo.normal;
+			}
+		}
 	}
 
 	void FixedUpdate() {
@@ -118,7 +126,17 @@ public class FirstPersonScript : MonoBehaviour {
 		// get the horizontal and vertical axis inputs
 		float horizontal = CrossPlatformInputManager.GetAxis ("Horizontal");
 		float vertical = CrossPlatformInputManager.GetAxis ("Vertical");
-		Vector3 movement = new Vector3 (horizontal, 0, vertical);
+		float yAxis = 0;
+		float movementModifier = 1;
+		if (noClipEnabled) {
+			yAxis = Input.GetAxis ("yAxis");
+			movementModifier = 2;
+		}
+		Vector3 movement = new Vector3 (horizontal, yAxis, vertical);
+
+		if (movementModifier != 1 && Input.GetButtonDown ("speedModifer")) {
+			movement = movement * movementModifier;
+		}
 
 		// translate the player acording to the horizontal and vertical axis
 		movement = transform.TransformVector(movement);
