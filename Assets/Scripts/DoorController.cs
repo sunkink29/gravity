@@ -4,24 +4,53 @@ using System.Collections;
 public class DoorController : MonoBehaviour , Powerable {
 
 	Animator animator;
+	bool open;
+	[SerializeField] bool doorOpened = false;
 
 	// Use this for initialization
-	void Start () {
+	public virtual void Start () {
 		animator = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	public virtual void Update () {
+		if (doorOpened != open) {
+			if (doorOpened) {
+				powerOn ();
+			} else {
+				powerOff ();
+			}
+		}
+	}
+
+	public virtual void OnTriggerEnter (Collider collider) {
+		powerOn ();
+	}
+
+	public virtual void OnTriggerExit (Collider collider) {
+		powerOff ();
 	}
 
 	public void powerOn () {
-			animator.SetBool ("DoorOpen", true);
-			animator.SetBool ("DoorClosed", false);
+		animateDoor (true);
+	}
+
+	public virtual void powerOn (PowerProvider reference) {
+		animateDoor (true);
 	}
 
 	public void powerOff () {
-			animator.SetBool ("DoorOpen", false);
-			animator.SetBool ("DoorClosed", true);
+		animateDoor (false);
+	}
+
+	public virtual void powerOff (PowerProvider reference) {
+		animateDoor (false);
+	}
+
+	void animateDoor (bool state) {
+		animator.SetBool ("DoorOpen", state);
+		animator.SetBool ("DoorClosed", !state);
+		doorOpened = state;
+		open = state;
 	}
 }

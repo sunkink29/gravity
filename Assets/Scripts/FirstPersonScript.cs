@@ -65,6 +65,8 @@ public class FirstPersonScript : MonoBehaviour {
 		// call the move and rotate helper fuctions
 //		move ();
 
+		checkInteraction ();
+
 		if (rotatePlayer && !disableMovement) {
 			cameraRotator.rotate ();
 		}
@@ -91,17 +93,17 @@ public class FirstPersonScript : MonoBehaviour {
 		}
 
 		// check if the player has pressed a button to interact
-		if (Input.GetButtonDown ("Interact")) {
-			if (!objectPickedUp) {
-
-				// if an object is not pick up call the fuction to pick it up
-				liftObjects ();
-			} else {
-
-				// if an object is picked up call the fuction to drop it
-				dropObject ();
-			}
-		}
+//		if (Input.GetButtonDown ("Interact")) {
+//			if (!objectPickedUp) {
+//
+//				// if an object is not pick up call the fuction to pick it up
+//				liftObjects ();
+//			} else {
+//
+//				// if an object is picked up call the fuction to drop it
+//				dropObject ();
+//			}
+//		}
 
 		if (noClipEnabled && Input.GetMouseButtonDown (0)) {
 			RaycastHit hitInfo;
@@ -142,6 +144,29 @@ public class FirstPersonScript : MonoBehaviour {
 		movement = transform.TransformVector(movement);
 //		playerRigidbody.MovePosition (gameObject.transform.position + movement * speed * Time.fixedDeltaTime);
 		playerRigidbody.AddForce (movement * speed, ForceMode.Impulse);
+	}
+
+	void checkInteraction() {
+		RaycastHit raycastHit;
+		bool hit = Physics.Raycast (playerCamera.transform.position, playerCamera.transform.forward, out raycastHit);
+		if (Input.GetButtonDown ("Interact")) {
+
+			Interactible interactScript = raycastHit.transform.gameObject.GetComponent<Interactible> ();
+			
+			if (hit && raycastHit.transform.gameObject.tag == "liftable") {
+				if (!objectPickedUp) {
+
+					// if an object is not pick up call the fuction to pick it up
+					liftObjects ();
+				} else {
+
+					// if an object is picked up call the fuction to drop it
+					dropObject ();
+				}
+			} else if (interactScript != null) {
+				interactScript.interact ();
+			}
+		}
 	}
 
 

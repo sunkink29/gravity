@@ -8,15 +8,20 @@ ModelImporter:
     100000: BaseStartingRoomMesh
     100002: Scale_Cube
     100004: //RootNode
+    100006: lights
     400000: BaseStartingRoomMesh
     400002: Scale_Cube
     400004: //RootNode
+    400006: lights
     2300000: BaseStartingRoomMesh
     2300002: Scale_Cube
+    2300004: lights
     3300000: BaseStartingRoomMesh
     3300002: Scale_Cube
+    3300004: lights
     4300000: BaseStartingRoomMesh
     4300002: Scale_Cube
+    4300004: lights
     7400000: Default Take
     9500000: //RootNode
   materials:
