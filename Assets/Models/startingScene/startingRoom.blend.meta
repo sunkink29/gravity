@@ -22,6 +22,15 @@ ModelImporter:
     100028: 5th_room_mesh
     100030: 5th_top_tunnel_mesh
     100032: 6th_room_mesh
+    100034: BaseStartingRoomMesh_001
+    100036: BaseStartingRoomMesh_002
+    100038: BaseStartingRoomMesh_003
+    100040: BaseStartingRoomMesh_004
+    100042: BaseStartingRoomMesh_005
+    100044: BaseStartingRoomMesh_006
+    100046: BaseStartingRoomMesh_007
+    100048: BaseStartingRoomMesh_008
+    100050: BaseStartingRoomMesh_009
     400000: Cube
     400002: Cube_001
     400004: //RootNode
@@ -39,6 +48,15 @@ ModelImporter:
     400028: 5th_room_mesh
     400030: 5th_top_tunnel_mesh
     400032: 6th_room_mesh
+    400034: BaseStartingRoomMesh_001
+    400036: BaseStartingRoomMesh_002
+    400038: BaseStartingRoomMesh_003
+    400040: BaseStartingRoomMesh_004
+    400042: BaseStartingRoomMesh_005
+    400044: BaseStartingRoomMesh_006
+    400046: BaseStartingRoomMesh_007
+    400048: BaseStartingRoomMesh_008
+    400050: BaseStartingRoomMesh_009
     2300000: Cube
     2300002: Cube_001
     2300004: BaseStartingRoomMesh
@@ -55,6 +73,15 @@ ModelImporter:
     2300026: 5th_room_mesh
     2300028: 5th_top_tunnel_mesh
     2300030: 6th_room_mesh
+    2300032: BaseStartingRoomMesh_001
+    2300034: BaseStartingRoomMesh_002
+    2300036: BaseStartingRoomMesh_003
+    2300038: BaseStartingRoomMesh_004
+    2300040: BaseStartingRoomMesh_005
+    2300042: BaseStartingRoomMesh_006
+    2300044: BaseStartingRoomMesh_007
+    2300046: BaseStartingRoomMesh_008
+    2300048: BaseStartingRoomMesh_009
     3300000: Cube
     3300002: Cube_001
     3300004: BaseStartingRoomMesh
@@ -71,6 +98,15 @@ ModelImporter:
     3300026: 5th_room_mesh
     3300028: 5th_top_tunnel_mesh
     3300030: 6th_room_mesh
+    3300032: BaseStartingRoomMesh_001
+    3300034: BaseStartingRoomMesh_002
+    3300036: BaseStartingRoomMesh_003
+    3300038: BaseStartingRoomMesh_004
+    3300040: BaseStartingRoomMesh_005
+    3300042: BaseStartingRoomMesh_006
+    3300044: BaseStartingRoomMesh_007
+    3300046: BaseStartingRoomMesh_008
+    3300048: BaseStartingRoomMesh_009
     4300000: Cube_001
     4300002: Cube
     4300004: BaseStartingRoomMesh
@@ -87,6 +123,15 @@ ModelImporter:
     4300026: 2st_room_mesh
     4300028: 1st_room_mesh
     4300030: 6th_room_mesh
+    4300032: BaseStartingRoomMesh_008
+    4300034: BaseStartingRoomMesh_007
+    4300036: BaseStartingRoomMesh_006
+    4300038: BaseStartingRoomMesh_005
+    4300040: BaseStartingRoomMesh_004
+    4300042: BaseStartingRoomMesh_003
+    4300044: BaseStartingRoomMesh_002
+    4300046: BaseStartingRoomMesh_001
+    4300048: BaseStartingRoomMesh_009
     7400000: Default Take
     9500000: //RootNode
   materials:
