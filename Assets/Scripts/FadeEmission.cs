@@ -18,7 +18,7 @@ public class FadeEmission : MonoBehaviour {
 	Coroutine coroutine;
 	public bool printMaterialNames;
 	bool usingWireShader;
-	float distanceFromStart = 0;
+	[HideInInspector] public bool atMaxEmission;
 
 	// Use this for initialization
 	void Start () {
@@ -67,18 +67,9 @@ public class FadeEmission : MonoBehaviour {
 		emission = endEmission;
 		mat.SetColor ("_EmissionColor", baseColor * Mathf.LinearToGammaSpace (endEmission));
 		DynamicGI.UpdateMaterials (objectRenderer);
-	}
-
-	IEnumerator changeWireDistance () {
-		float pointInTime = 0;
-		float maxDistance = Vector3.Distance (wireStart.position, wireEnd.position);
-		while (pointInTime <= duration) {
-			emission = Mathf.Lerp (startEmission, maxDistance, pointInTime / duration);
-			mat.SetFloat ("_Distance", emission);
-			pointInTime += 0.01f;
-			yield return new WaitForSeconds (0.01f);
+		if (emission == maxEmission || usingWireShader) {
+			atMaxEmission = true;
 		}
-		emission = maxDistance;
 	}
 
 	public void turnOn () {
@@ -89,10 +80,8 @@ public class FadeEmission : MonoBehaviour {
 		endEmission = maxEmission;
 		if (usingWireShader) {
 			endEmission = Vector3.Distance (wireStart.position, wireEnd.position);
-//			coroutine = StartCoroutine (changeWireDistance ());
-		} /*else {*/
+		} 
 			coroutine = StartCoroutine (changeValue ());
-//		}
 	}
 
 	public void turnOff () {
@@ -101,6 +90,7 @@ public class FadeEmission : MonoBehaviour {
 		}
 		startEmission = emission;
 		endEmission = 0;
+		atMaxEmission = false;
         if (usingWireShader) {
             emission = 0;
             mat.SetFloat("_Distance", 0);
