@@ -48,6 +48,14 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider {
 		}
 	}
 
+    IEnumerator waitForFullEmission() {
+        yield return new WaitForSeconds(fadeEmission.duration);
+        if (connectedObjectScript != null)
+        {
+            connectedObjectScript.powerOn(this);
+        }
+    }
+
 	public void powerOn () {
 		powerOn (null);
 	}
@@ -56,9 +64,7 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider {
 		if (!isPowered) {
 			isPowered = true;
 			fadeEmission.turnOn ();
-			if (connectedObjectScript != null) {
-				connectedObjectScript.powerOn (this);
-			}
+            StartCoroutine(waitForFullEmission());
 		}
 	}
 

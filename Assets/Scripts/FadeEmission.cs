@@ -54,7 +54,9 @@ public class FadeEmission : MonoBehaviour {
 			emission = Mathf.Lerp (startEmission, endEmission, pointInTime / duration);
 			if (usingWireShader) {
 				mat.SetFloat ("_Distance", emission);
-			} else {
+                mat.SetColor("_EmissionColor", baseColor * Mathf.LinearToGammaSpace(maxEmission));
+            }
+            else {
 				Color finalColor = baseColor * Mathf.LinearToGammaSpace (emission);
 				mat.SetColor ("_EmissionColor", finalColor);
 			}
@@ -99,6 +101,14 @@ public class FadeEmission : MonoBehaviour {
 		}
 		startEmission = emission;
 		endEmission = 0;
-		coroutine = StartCoroutine (changeValue ());
+        if (usingWireShader) {
+            emission = 0;
+            mat.SetFloat("_Distance", 0);
+            mat.SetColor("_EmissionColor", baseColor * Mathf.LinearToGammaSpace(endEmission));
+            DynamicGI.UpdateMaterials(objectRenderer);
+        }
+        else {
+            coroutine = StartCoroutine(changeValue());
+        }
 	}
 }
