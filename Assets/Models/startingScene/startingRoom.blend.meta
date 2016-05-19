@@ -1,0 +1,210 @@
+fileFormatVersion: 2
+guid: d44a6047913464d04a23c91c36138b04
+timeCreated: 1460235375
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Cube
+    100002: Cube_001
+    100004: //RootNode
+    100006: BaseStartingRoomMesh
+    100008: Scale_Cube
+    100010: 1st_room_mesh
+    100012: 1st_tunnel_mesh
+    100014: 2nd_tunnel_mesh
+    100016: 2st_room_mesh
+    100018: 3rd__tunnel_mesh
+    100020: 3rd_room_mesh
+    100022: 4th_room_mesh
+    100024: 4th_tunnel_mesh
+    100026: 5th_bottem_tunnel_mesh
+    100028: 5th_room_mesh
+    100030: 5th_top_tunnel_mesh
+    100032: 6th_room_mesh
+    100034: BaseStartingRoomMesh_001
+    100036: BaseStartingRoomMesh_002
+    100038: BaseStartingRoomMesh_003
+    100040: BaseStartingRoomMesh_004
+    100042: BaseStartingRoomMesh_005
+    100044: BaseStartingRoomMesh_006
+    100046: BaseStartingRoomMesh_007
+    100048: BaseStartingRoomMesh_008
+    100050: BaseStartingRoomMesh_009
+    100052: BaseStartingRoomMesh_010
+    100054: BaseStartingRoomMesh_011
+    400000: Cube
+    400002: Cube_001
+    400004: //RootNode
+    400006: BaseStartingRoomMesh
+    400008: Scale_Cube
+    400010: 1st_room_mesh
+    400012: 1st_tunnel_mesh
+    400014: 2nd_tunnel_mesh
+    400016: 2st_room_mesh
+    400018: 3rd__tunnel_mesh
+    400020: 3rd_room_mesh
+    400022: 4th_room_mesh
+    400024: 4th_tunnel_mesh
+    400026: 5th_bottem_tunnel_mesh
+    400028: 5th_room_mesh
+    400030: 5th_top_tunnel_mesh
+    400032: 6th_room_mesh
+    400034: BaseStartingRoomMesh_001
+    400036: BaseStartingRoomMesh_002
+    400038: BaseStartingRoomMesh_003
+    400040: BaseStartingRoomMesh_004
+    400042: BaseStartingRoomMesh_005
+    400044: BaseStartingRoomMesh_006
+    400046: BaseStartingRoomMesh_007
+    400048: BaseStartingRoomMesh_008
+    400050: BaseStartingRoomMesh_009
+    400052: BaseStartingRoomMesh_010
+    400054: BaseStartingRoomMesh_011
+    2300000: Cube
+    2300002: Cube_001
+    2300004: BaseStartingRoomMesh
+    2300006: Scale_Cube
+    2300008: 1st_room_mesh
+    2300010: 1st_tunnel_mesh
+    2300012: 2nd_tunnel_mesh
+    2300014: 2st_room_mesh
+    2300016: 3rd__tunnel_mesh
+    2300018: 3rd_room_mesh
+    2300020: 4th_room_mesh
+    2300022: 4th_tunnel_mesh
+    2300024: 5th_bottem_tunnel_mesh
+    2300026: 5th_room_mesh
+    2300028: 5th_top_tunnel_mesh
+    2300030: 6th_room_mesh
+    2300032: BaseStartingRoomMesh_001
+    2300034: BaseStartingRoomMesh_002
+    2300036: BaseStartingRoomMesh_003
+    2300038: BaseStartingRoomMesh_004
+    2300040: BaseStartingRoomMesh_005
+    2300042: BaseStartingRoomMesh_006
+    2300044: BaseStartingRoomMesh_007
+    2300046: BaseStartingRoomMesh_008
+    2300048: BaseStartingRoomMesh_009
+    2300050: BaseStartingRoomMesh_010
+    2300052: BaseStartingRoomMesh_011
+    3300000: Cube
+    3300002: Cube_001
+    3300004: BaseStartingRoomMesh
+    3300006: Scale_Cube
+    3300008: 1st_room_mesh
+    3300010: 1st_tunnel_mesh
+    3300012: 2nd_tunnel_mesh
+    3300014: 2st_room_mesh
+    3300016: 3rd__tunnel_mesh
+    3300018: 3rd_room_mesh
+    3300020: 4th_room_mesh
+    3300022: 4th_tunnel_mesh
+    3300024: 5th_bottem_tunnel_mesh
+    3300026: 5th_room_mesh
+    3300028: 5th_top_tunnel_mesh
+    3300030: 6th_room_mesh
+    3300032: BaseStartingRoomMesh_001
+    3300034: BaseStartingRoomMesh_002
+    3300036: BaseStartingRoomMesh_003
+    3300038: BaseStartingRoomMesh_004
+    3300040: BaseStartingRoomMesh_005
+    3300042: BaseStartingRoomMesh_006
+    3300044: BaseStartingRoomMesh_007
+    3300046: BaseStartingRoomMesh_008
+    3300048: BaseStartingRoomMesh_009
+    3300050: BaseStartingRoomMesh_010
+    3300052: BaseStartingRoomMesh_011
+    4300000: Cube_001
+    4300002: Cube
+    4300004: BaseStartingRoomMesh
+    4300006: Scale_Cube
+    4300008: 5th_bottem_tunnel_mesh
+    4300010: 5th_top_tunnel_mesh
+    4300012: 5th_room_mesh
+    4300014: 4th_tunnel_mesh
+    4300016: 4th_room_mesh
+    4300018: 3rd__tunnel_mesh
+    4300020: 3rd_room_mesh
+    4300022: 2nd_tunnel_mesh
+    4300024: 1st_tunnel_mesh
+    4300026: 2st_room_mesh
+    4300028: 1st_room_mesh
+    4300030: 6th_room_mesh
+    4300032: BaseStartingRoomMesh_008
+    4300034: BaseStartingRoomMesh_007
+    4300036: BaseStartingRoomMesh_006
+    4300038: BaseStartingRoomMesh_005
+    4300040: BaseStartingRoomMesh_004
+    4300042: BaseStartingRoomMesh_003
+    4300044: BaseStartingRoomMesh_002
+    4300046: BaseStartingRoomMesh_001
+    4300048: BaseStartingRoomMesh_009
+    4300050: BaseStartingRoomMesh_010
+    4300052: BaseStartingRoomMesh_011
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
