@@ -8,7 +8,7 @@ public class FadeEmission : MonoBehaviour {
 	Material[] materials;
 	public string materialName;
 	Color baseColor;
-	public float duration = 1;
+	public float speed = 0.1f;
 	float startEmission;
 	float endEmission;
 	[HideInInspector] public float emission = 0;
@@ -49,26 +49,34 @@ public class FadeEmission : MonoBehaviour {
 	}
 
 	IEnumerator changeValue () {
-		float pointInTime = 0;
-		while (pointInTime <= duration) {
-			emission = Mathf.Lerp (startEmission, endEmission, pointInTime / duration);
+        float endAmount;
+        if (usingWireShader) {
+            endAmount = Vector3.Distance(wireStart.position, wireEnd.position);
+        } else {
+            endAmount = maxEmission;
+        }
+        for (float i = 0; i /*+ speed*0.1*/ <= endAmount; i += speed * 0.1f) {
+            print(i / endAmount+";"+gameObject);
 			if (usingWireShader) {
-				mat.SetFloat ("_Distance", emission);
+                emission = Mathf.Lerp(startEmission, endEmission, i / endAmount);
+                mat.SetFloat ("_Distance", emission);
                 mat.SetColor("_EmissionColor", baseColor * Mathf.LinearToGammaSpace(maxEmission));
             }
             else {
-				Color finalColor = baseColor * Mathf.LinearToGammaSpace (emission);
+                emission = Mathf.Lerp(startEmission, endEmission, i / endAmount);
+                Color finalColor = baseColor * Mathf.LinearToGammaSpace (emission);
 				mat.SetColor ("_EmissionColor", finalColor);
 			}
 			DynamicGI.UpdateMaterials (objectRenderer);
-			pointInTime += 0.01f;
 			yield return new WaitForSeconds (0.01f);
 		}
 		emission = endEmission;
 		if (!usingWireShader) {
 			mat.SetColor ("_EmissionColor", baseColor * Mathf.LinearToGammaSpace (endEmission));
 			DynamicGI.UpdateMaterials (objectRenderer);
-		}
+		} else {
+            mat.SetFloat("_Distance", endAmount);
+        }
 		if (emission == maxEmission || usingWireShader) {
 			atMaxEmission = true;
 		}

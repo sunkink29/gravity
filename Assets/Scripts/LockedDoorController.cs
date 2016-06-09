@@ -7,19 +7,25 @@ public class LockedDoorController : DoorController {
 	public GameObject[] references;
 	LockedDoorPart[] doorLocks;
 	public bool printLockStates = false;
+    public DoorKey key;
 
 	// Use this for initialization
 	public override void Start () {
 		base.Start ();
 		doorLocks = new LockedDoorPart[references.Length];
 		for (int i = 0; i < references.Length; i++) {
-			if (references [i] != null) {
-				doorLocks = GetComponentsInChildren<LockedDoorPart> ();
-				doorLocks [i].UseLockPart ();
-				doorLocks [i].reference = references [i].GetComponent<PowerProvider> ();
-				doorLocks [i].reference.sendReference (this);
+            if (references[i] != null || key != null && key.references[i] != null)
+            {
+                doorLocks = GetComponentsInChildren<LockedDoorPart>();
+                doorLocks[i].UseLockPart();
+                if (references[i] != null)
+                {
+                    doorLocks[i].reference = references[i].GetComponent<PowerProvider>();
+                    doorLocks[i].reference.sendReference(this);
+                }
 			}
 		}
+        key.sendReference(this);
 	}
 	
 	// Update is called once per frame
@@ -82,7 +88,7 @@ public class LockedDoorController : DoorController {
 				locksPowered++;
 			}
 		}
-		if (locksPowered == doorLocks.Length	) {
+		if (locksPowered == doorLocks.Length || key.unlocked) {
 			unlocked = true;
 		}
 		return unlocked;

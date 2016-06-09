@@ -43,6 +43,9 @@
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;
+			// _WireStart = mul(_WireStart , _Object2World);
+			// _WireStart.y = mul(float4(IN.worldPos,0.0), _Object2World).y;
+			// _WireStart = mul(_WireStart, _World2Object);
 			float d = distance(_WireStart, IN.worldPos);
 			half4 e = _EmissionColor * _EmissionStrength * step(d,_Distance);
 			o.Emission = e.rgb;
