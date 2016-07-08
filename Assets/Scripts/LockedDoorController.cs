@@ -25,7 +25,10 @@ public class LockedDoorController : DoorController {
                 }
 			}
 		}
-        key.sendReference(this);
+        if (key != null)
+        {
+            key.sendReference(this);
+        }
 	}
 	
 	// Update is called once per frame

@@ -197,7 +197,7 @@
 			#pragma shader_feature _METALLICGLOSSMAP
 			#pragma shader_feature ___ _DETAIL_MULX2
 
-			#include "UnityStandardMeta.cginc"
+			#include "UnityCustomWireStandardMeta.cginc"
 			ENDCG
 		}
 	}
@@ -316,5 +316,5 @@
 
 
 	FallBack "VertexLit"
-	CustomEditor "StandardShaderGUI"
+	CustomEditor "CustomStandardShaderGUI"
 }

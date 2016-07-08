@@ -27,12 +27,17 @@
 			float3 worldPos;
 		};
 
+		//void vert(inout appdata_full v, out Input o) {
+			//UNITY_INITIALIZE_OUTPUT(Input, o);
+			//o.objPos = v.vertex;
+		//}
+
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
 		float _EmissionStrength;
 		fixed4 _EmissionColor;
-		half4 _WireStart;
+		float3 _WireStart;
 		float _Distance;
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
@@ -46,7 +51,22 @@
 			// _WireStart = mul(_WireStart , _Object2World);
 			// _WireStart.y = mul(float4(IN.worldPos,0.0), _Object2World).y;
 			// _WireStart = mul(_WireStart, _World2Object);
-			float d = distance(_WireStart, IN.worldPos);
+
+			// provided direction -1 < 0 = 1 means there is a value
+			// provided direction * above result + defalt * ((above result -1)*-1) = value to use 
+			//half4 center = mul(half4(0, 0, 0, 0), _Object2World);
+			//half4 edge = mul(half4(1, 1, 1, 1), _Object2World);
+			// y > x = 1
+			// z > y = 2
+			// x > z = 3
+			// x: 3 || 5
+			// y: 1 || 4
+			// z: 2 || 3
+			// (x>y * x>z, y>x * y>z, z>x * z>y)
+			//half4 ed = edge - center;
+			//half4 ddirection = half4(step(ed.y, ed.x) * step(ed.z, ed.x), step(ed.x, ed.y) * step(ed.z, ed.y), step(ed.x, ed.z) * step(ed.y, ed.z), 0);
+			//_WireStart = mul(ddirection, _Object2World);
+			float d = distance(_WireStart, IN.worldPos); // mul(float4(IN.WorldPos, 0), _World2Object).xyz);
 			half4 e = _EmissionColor * _EmissionStrength * step(d,_Distance);
 			o.Emission = e.rgb;
 		}

@@ -56,7 +56,6 @@ public class FadeEmission : MonoBehaviour {
             endAmount = maxEmission;
         }
         for (float i = 0; i /*+ speed*0.1*/ <= endAmount; i += speed * 0.1f) {
-            print(i / endAmount+";"+gameObject);
 			if (usingWireShader) {
                 emission = Mathf.Lerp(startEmission, endEmission, i / endAmount);
                 mat.SetFloat ("_Distance", emission);

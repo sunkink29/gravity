@@ -626,7 +626,8 @@ void fragDeferred (
 	color += UNITY_BRDF_GI (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, occlusion, gi);
 
 	#ifdef _EMISSION
-		color += Emission (i.tex.xy);
+		float d = distance(WireStart(), mul(_Object2World, i.pos));
+		color += Emission (i.tex.xy) * step(d, Distance());
 	#endif
 
 	#ifndef UNITY_HDR_ON
