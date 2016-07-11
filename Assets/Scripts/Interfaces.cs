@@ -19,3 +19,8 @@ public interface PowerProvider {
 
 	void sendReference (Powerable reference);
 }
+
+public interface Debugable {
+
+    void debug();
+}

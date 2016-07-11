@@ -5,7 +5,7 @@ using UnityStandardAssets.CrossPlatformInput;
     public class FirstPersonScript : MonoBehaviour
     {
 
-        // the gameobject that holds the camera and any other object to rotate when the camera goes up or down
+         // the gameobject that holds the camera and any other object to rotate when the camera goes up or down
         public GameObject playerCamera;
         [SerializeField]
         private CameraController cameraRotator = new CameraController();
@@ -32,6 +32,9 @@ using UnityStandardAssets.CrossPlatformInput;
 
         public bool rotatePlayer = true;
         public bool debug = false;
+        public bool cheatsEnabled = false;
+        bool cursorHidden = false;
+        bool gamePaused = false;
         Rigidbody playerRigidbody;
         public bool disableMovement = false;
         public static FirstPersonScript player;
@@ -39,33 +42,40 @@ using UnityStandardAssets.CrossPlatformInput;
         public float maxInteractDistance = 3;
         public KeyCode noClipKey = KeyCode.Backslash;
         Collider playerCollider;
+        
+        void Awake()
+        {
+        Application.targetFrameRate = 20;
+        // get gravity script
+        gravityOnNormals = GetComponent<GravityOnNormals>();
 
+        // set up the camera rotator
+        playerCamera = GameObject.FindWithTag("MainCamera");
+        cameraRotator.Setup(playerCamera.transform, transform);
+
+        if (Application.isEditor)
+        {
+            cheatsEnabled = true;
+        }
+
+        // get the spot light
+        spotlight = GameObject.FindGameObjectWithTag("spot light").GetComponent<Light>();
+        spotlight.gameObject.SetActive(false);
+
+        playerRigidbody = GetComponent<Rigidbody>();
+
+        player = this;
+        playerCollider = GetComponent<Collider>();
+    }
+        
         // Use this for initialization
         void Start()
         {
-            Application.targetFrameRate = 20;
-            // get gravity script
-            gravityOnNormals = GetComponent<GravityOnNormals>();
-
-            // set up the camera rotator
-            playerCamera = GameObject.FindWithTag("MainCamera");
-            cameraRotator.Setup(playerCamera.transform, transform);
-
             // lock and hid the mouse
-            if (!disableMovement)
+            if (!cursorHidden)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                lockCursor(true);
             }
-
-            // get the spot light
-            spotlight = GameObject.FindGameObjectWithTag("spot light").GetComponent<Light>();
-            spotlight.gameObject.SetActive(false);
-
-            playerRigidbody = GetComponent<Rigidbody>();
-
-            player = this;
-            playerCollider = GetComponent<Collider>();
         }
 
 
@@ -90,19 +100,14 @@ using UnityStandardAssets.CrossPlatformInput;
             }
 
             // set the cursor lockstate to locked if it is not locked
-            if ((!(Cursor.lockState == CursorLockMode.Locked) && !disableMovement))
+            if (!(Cursor.lockState == CursorLockMode.Locked))
             {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else if (disableMovement)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                lockCursor(cursorHidden);
             }
 
             if (Input.GetButtonDown("pause game"))
             {
-                disableMovement = !disableMovement;
+                pauseGame();
             }
 
             if (Input.GetButtonDown("Toggle Light"))
@@ -110,7 +115,12 @@ using UnityStandardAssets.CrossPlatformInput;
                 spotlight.gameObject.SetActive(!spotlight.gameObject.activeInHierarchy);
             }
 
-            if (Input.GetKeyDown(noClipKey))
+            if (Input.GetKeyDown(KeyCode.Mouse3))
+            {
+                toggleCheats(); 
+            }
+
+            if (cheatsEnabled && Input.GetKeyDown(noClipKey) || (!cheatsEnabled && noClipEnabled))
             {
                 toggleNoClip();
             }
@@ -205,6 +215,15 @@ using UnityStandardAssets.CrossPlatformInput;
                     interactScript.interact();
                 }
             }
+            
+            if (cheatsEnabled && hit && Input.GetMouseButtonDown(4))
+            {
+                Debugable debugScript = raycastHit.transform.gameObject.GetComponent<Debugable>();
+
+                if (debugScript != null) {
+                    debugScript.debug();
+                }
+            }
         }
 
 
@@ -258,6 +277,14 @@ using UnityStandardAssets.CrossPlatformInput;
             objectPickedUp = false;
         }
 
+        public void pauseGame()
+        {
+            gamePaused = !gamePaused;
+            disableMovement = gamePaused;
+            rotatePlayer = !gamePaused;
+            lockCursor(!cursorHidden);
+        }
+
         public void toggleNoClip()
         {
             toggleNoClip(false);
@@ -278,4 +305,16 @@ using UnityStandardAssets.CrossPlatformInput;
             }
         }
 
-    }
+        public void lockCursor(bool hidden)
+        {
+            cursorHidden = hidden;
+            Cursor.visible = !cursorHidden;
+            Cursor.lockState = cursorHidden ? CursorLockMode.Locked : CursorLockMode.None;
+        }
+
+        public void toggleCheats()
+        {
+            cheatsEnabled = !cheatsEnabled;
+        }
+
+}

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class WireButtonController : MonoBehaviour , Powerable, PowerProvider {
+public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, Debugable {
 
 	Collider currentCollider;
 	[SerializeField] bool isPowered;
@@ -88,5 +88,15 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider {
 	public void sendReference(Powerable reference) {
 		connectedObjectScript = reference;
 	}
+
+    public void debug() {
+        if (isPowered)
+        {
+            powerOff();
+        } else
+        {
+            powerOn();
+        }
+    }
 
 }
