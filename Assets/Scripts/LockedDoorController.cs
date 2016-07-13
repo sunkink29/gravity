@@ -17,7 +17,7 @@ public class LockedDoorController : DoorController {
             if (references[i] != null || key != null && key.references[i] != null)
             {
                 doorLocks = GetComponentsInChildren<LockedDoorPart>();
-                doorLocks[i].UseLockPart();
+                doorLocks[i].UseLockPart(this);
                 if (references[i] != null)
                 {
                     doorLocks[i].reference = references[i].GetComponent<PowerProvider>();
@@ -83,7 +83,7 @@ public class LockedDoorController : DoorController {
 		}
 	}
 
-	bool checkIfUnlocked() {
+	public bool checkIfUnlocked() {
 		int locksPowered = 0;
 		bool unlocked = false;
 		for (int i = 0; i < doorLocks.Length; i++) {
@@ -96,4 +96,12 @@ public class LockedDoorController : DoorController {
 		}
 		return unlocked;
 	}
+
+    public void toggleDoorLockState()
+    {
+        for (int i = 0;i < doorLocks.Length; i++)
+        {
+            changeLockPowerState(i, !checkIfUnlocked());
+        }
+    }
 }

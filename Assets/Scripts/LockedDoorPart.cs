@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LockedDoorPart : MonoBehaviour {
+public class LockedDoorPart : MonoBehaviour, Debugable {
 
 	public PowerProvider reference;
 	bool powered;
 	public bool isPowered;
 	FadeEmission fadeEmission;
 	Coroutine coroutine;
+    LockedDoorController doorController;
 
 	void Awake() {
 		coroutine = StartCoroutine (WaitForDoor ());
@@ -61,10 +62,16 @@ public class LockedDoorPart : MonoBehaviour {
 		}
 	}
 
-	public void UseLockPart(){
+	public void UseLockPart(LockedDoorController door){
+        doorController = door;
 		StopCoroutine (coroutine);
 		if (Application.isEditor) {
 			StartCoroutine (CheckForVariableChange ());
 		}
 	}
+
+    public void debug()
+    {
+        doorController.toggleDoorLockState();
+    }
 }

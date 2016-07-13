@@ -14,7 +14,7 @@ public class DoorKey : MonoBehaviour, Powerable {
             if (references[i] != null)
             {
                 doorLocks = GetComponentsInChildren<LockedDoorPart>();
-                doorLocks[i].UseLockPart();
+                doorLocks[i].UseLockPart(door);
                 doorLocks[i].reference = references[i].GetComponent<PowerProvider>();
                 doorLocks[i].reference.sendReference(this);
             }
