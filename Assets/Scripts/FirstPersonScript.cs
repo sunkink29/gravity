@@ -25,7 +25,8 @@ using UnityStandardAssets.CrossPlatformInput;
         CubeController liftObjectScript;
 
         // the script for the script that controls the gravity for the player
-        public GravityOnNormals gravityOnNormals;
+        [SerializeField]
+        public GravityOnNormals gravityOnNormals = new GravityOnNormals();
 
         // A light on the player to light up the area
         Light spotlight;
@@ -45,9 +46,10 @@ using UnityStandardAssets.CrossPlatformInput;
         
         void Awake()
         {
-        Application.targetFrameRate = 20;
+        //Application.targetFrameRate = 20;
         // get gravity script
-        gravityOnNormals = GetComponent<GravityOnNormals>();
+        gravityOnNormals.attachedPlayer = this;
+        //gravityOnNormals = GetComponent<GravityOnNormals>();
 
         // set up the camera rotator
         playerCamera = GameObject.FindWithTag("MainCamera");
@@ -71,6 +73,7 @@ using UnityStandardAssets.CrossPlatformInput;
         // Use this for initialization
         void Start()
         {
+            gravityOnNormals.Start();
             // lock and hid the mouse
             if (!cursorHidden)
             {
@@ -82,7 +85,7 @@ using UnityStandardAssets.CrossPlatformInput;
         // Update is called once per frame
         void Update()
         {
-
+            gravityOnNormals.Update();
             // call the move and rotate helper fuctions
             //		move ();
 
@@ -152,6 +155,7 @@ using UnityStandardAssets.CrossPlatformInput;
 
         void FixedUpdate()
         {
+            gravityOnNormals.FixedUpdate();
             if (!disableMovement)
             {
                 move();
