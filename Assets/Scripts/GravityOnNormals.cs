@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
-public class GravityOnNormals : MonoBehaviour {
+[Serializable]
+public class GravityOnNormals /*: MonoBehaviour*/ {
 
 	Rigidbody playerRigidbody;
 //	RaycastHit lasthit;
 	public Vector3 currentDirection;
 	Vector3 lasthitDirection;
-	public float gravity = 5f;
-	public float angleSpeed = 0.5f;
+	public float gravity = 20f;
+	public float angleSpeed = 5f;
 	bool disableXRotation = false;
 	Vector3 lastRotation;
 	public bool disableAutoRotate = false;
 	RaycastHit raycastHit;
-	FirstPersonScript attachedPlayer;
+	public FirstPersonScript attachedPlayer;
 	Quaternion lastrotation;
 	float pointInRotation = 0;
 	bool resetPointInRotation = false;
@@ -25,11 +27,10 @@ public class GravityOnNormals : MonoBehaviour {
 	void Awake () {
 		playerRigidbody = GetComponent<Rigidbody>();
 //		currentDirection = Vector3.up;
-		attachedPlayer = GetComponent<FirstPersonScript> ();
-		playerCollider = GetComponent<CapsuleCollider> ();
+		playerCollider = attachedPlayer.GetComponent<CapsuleCollider> ();
 	}
 
-	void FixedUpdate ()
+	public void FixedUpdate ()
 	{
 		if (enableGravity) {
 			useGravity ();
@@ -40,7 +41,7 @@ public class GravityOnNormals : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () 
+	public void Update () 
 	{
 		rotate ();
 
@@ -49,12 +50,12 @@ public class GravityOnNormals : MonoBehaviour {
 	public void toggleXRotation (bool status) {
 		disableXRotation = status;
 		if (status == true)
-			lastRotation = transform.rotation.eulerAngles;
+			lastRotation = attachedPlayer.transform.rotation.eulerAngles;
 	}
 
 	void rotate (){
-		if (transform.up != currentDirection) {
-			Quaternion targetQuaternion = Quaternion.FromToRotation (transform.up, currentDirection) * transform.rotation;
+		if (attachedPlayer.transform.up != currentDirection) {
+			Quaternion targetQuaternion = Quaternion.FromToRotation ( attachedPlayer.transform.up, currentDirection) * attachedPlayer.transform.rotation;
 			if (resetPointInRotation)
 				pointInRotation = 0;
 		
@@ -70,7 +71,7 @@ public class GravityOnNormals : MonoBehaviour {
 				pointInRotation = 1;
 			}
 
-			transform.rotation = Quaternion.Slerp (lastrotation, targetQuaternion, pointInRotation);
+			attachedPlayer.transform.rotation = Quaternion.Slerp (lastrotation, targetQuaternion, pointInRotation);
 		}
 	}
 
@@ -80,7 +81,7 @@ public class GravityOnNormals : MonoBehaviour {
 
 	public void rayCastGround() {
 		RaycastHit hitInfo;
-		bool hit = Physics.Raycast (transform.position, transform.up * -1, out hitInfo);
+		bool hit = Physics.Raycast (attachedPlayer.transform.position, attachedPlayer.transform.up * -1, out hitInfo);
 
 		attachedPlayer.rotatePlayer = true;
 		if (hit) {
@@ -91,7 +92,7 @@ public class GravityOnNormals : MonoBehaviour {
 				if (lasthitDirection != currentDirection) {
 					attachedPlayer.rotatePlayer = false;
 					resetPointInRotation = true;
-					lastrotation = transform.localRotation;
+					lastrotation = attachedPlayer.transform.localRotation;
 					Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
 				}
 			}
