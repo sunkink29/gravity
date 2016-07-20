@@ -34,7 +34,7 @@ using UnityStandardAssets.CrossPlatformInput;
         public bool debug = false;
         public bool cheatsEnabled = false;
         bool cursorHidden = false;
-        bool gamePaused = false;
+        public bool gamePaused = false;
         Rigidbody playerRigidbody;
         public bool disableMovement = false;
         public static FirstPersonScript player;
@@ -42,6 +42,7 @@ using UnityStandardAssets.CrossPlatformInput;
         public float maxInteractDistance = 3;
         public KeyCode noClipKey = KeyCode.Backslash;
         Collider playerCollider;
+        public GameObject reticle;
         
         void Awake()
         {
@@ -283,6 +284,7 @@ using UnityStandardAssets.CrossPlatformInput;
             disableMovement = gamePaused;
             rotatePlayer = !gamePaused;
             lockCursor(!cursorHidden);
+            reticle.SetActive(!gamePaused);
         }
 
         public void toggleNoClip()
