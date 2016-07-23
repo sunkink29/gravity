@@ -6,17 +6,7 @@ public class button : MonoBehaviour , Interactible, PowerProvider {
 	Powerable connectedObject;
 	bool supplyPower = false;
 	public bool toggleButton = true;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
+    
 	public void interact () {
 		supplyPower = !supplyPower;
 		if (supplyPower) {
