@@ -24,8 +24,8 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 	CapsuleCollider playerCollider;
 
 	// Use this for initialization
-	void Awake () {
-		playerRigidbody = GetComponent<Rigidbody>();
+	public void Awake () {
+		playerRigidbody = attachedPlayer.GetComponent<Rigidbody>();
 //		currentDirection = Vector3.up;
 		playerCollider = attachedPlayer.GetComponent<CapsuleCollider> ();
 	}

@@ -8,7 +8,7 @@ using UnityStandardAssets.CrossPlatformInput;
          // the gameobject that holds the camera and any other object to rotate when the camera goes up or down
         public GameObject playerCamera;
         [SerializeField]
-        private CameraController cameraRotator = new CameraController();
+        public CameraController cameraRotator = new CameraController();
 
         // the speed that the player moves at in units per second
         public float speed = 15;
@@ -69,19 +69,14 @@ using UnityStandardAssets.CrossPlatformInput;
 
         player = this;
         playerCollider = GetComponent<Collider>();
-    }
-        
-        // Use this for initialization
-        void Start()
-        {
-            gravityOnNormals.Start();
-            // lock and hid the mouse
-            if (!cursorHidden)
-            {
-                lockCursor(true);
-            }
-        }
+        gravityOnNormals.Awake();
 
+        // lock and hid the mouse
+        if (!cursorHidden)
+        {
+            lockCursor(true);
+        }
+    }
 
         // Update is called once per frame
         void Update()
