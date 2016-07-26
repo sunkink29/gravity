@@ -6,16 +6,7 @@ public class button : MonoBehaviour , Interactible, PowerProvider {
 	Powerable connectedObject;
 	bool supplyPower = false;
 	public bool toggleButton = true;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public Animator animator;
 
 	public void interact () {
 		supplyPower = !supplyPower;
@@ -24,6 +15,7 @@ public class button : MonoBehaviour , Interactible, PowerProvider {
 		} else if (toggleButton) {
 			connectedObject.powerOff (this);
 		}
+        animator.SetBool("ButtonPressed", supplyPower);
 	}
 
 	public void sendReference(Powerable reference) {
