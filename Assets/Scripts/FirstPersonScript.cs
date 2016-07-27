@@ -8,7 +8,7 @@ using UnityStandardAssets.CrossPlatformInput;
          // the gameobject that holds the camera and any other object to rotate when the camera goes up or down
         public GameObject playerCamera;
         [SerializeField]
-        private CameraController cameraRotator = new CameraController();
+        public CameraController cameraRotator = new CameraController();
 
         // the speed that the player moves at in units per second
         public float speed = 15;
@@ -35,7 +35,7 @@ using UnityStandardAssets.CrossPlatformInput;
         public bool debug = false;
         public bool cheatsEnabled = false;
         bool cursorHidden = false;
-        bool gamePaused = false;
+        public bool gamePaused = false;
         Rigidbody playerRigidbody;
         public bool disableMovement = false;
         public static FirstPersonScript player;
@@ -43,6 +43,7 @@ using UnityStandardAssets.CrossPlatformInput;
         public float maxInteractDistance = 3;
         public KeyCode noClipKey = KeyCode.Backslash;
         Collider playerCollider;
+        public GameObject reticle;
         
         void Awake()
         {
@@ -68,19 +69,14 @@ using UnityStandardAssets.CrossPlatformInput;
 
         player = this;
         playerCollider = GetComponent<Collider>();
-    }
-        
-        // Use this for initialization
-        void Start()
-        {
-            gravityOnNormals.Start();
-            // lock and hid the mouse
-            if (!cursorHidden)
-            {
-                lockCursor(true);
-            }
-        }
+        gravityOnNormals.Awake();
 
+        // lock and hid the mouse
+        if (!cursorHidden)
+        {
+            lockCursor(true);
+        }
+    }
 
         // Update is called once per frame
         void Update()
@@ -287,6 +283,7 @@ using UnityStandardAssets.CrossPlatformInput;
             disableMovement = gamePaused;
             rotatePlayer = !gamePaused;
             lockCursor(!cursorHidden);
+            reticle.SetActive(!gamePaused);
         }
 
         public void toggleNoClip()

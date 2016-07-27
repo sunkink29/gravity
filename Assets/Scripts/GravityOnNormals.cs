@@ -24,9 +24,8 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 	CapsuleCollider playerCollider;
 
 	// Use this for initialization
-	public void Start () {
-//        attachedPlayer = attachedPlayer.GetComponent<FirstPersonScript>();
-        playerRigidbody = attachedPlayer.GetComponent<Rigidbody>();
+	public void Awake () {
+		playerRigidbody = attachedPlayer.GetComponent<Rigidbody>();
 //		currentDirection = Vector3.up;
 		playerCollider = attachedPlayer.GetComponent<CapsuleCollider> ();
 	}
@@ -80,7 +79,7 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 			playerRigidbody.AddForce (-currentDirection * gravity, ForceMode.Impulse);
 	}
 
-	void rayCastGround() {
+	public void rayCastGround() {
 		RaycastHit hitInfo;
 		bool hit = Physics.Raycast (attachedPlayer.transform.position, attachedPlayer.transform.up * -1, out hitInfo);
 

@@ -6,8 +6,8 @@
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 		_EmissionStrength ("Emission", float) = 1
 		_EmissionColor("Emission Color", Color) = (1,1,1,1)
-		_Divisions("Divisions", int) = 3
-		_lineThickness("lineThickness", int) = 1
+		_Divisions("Divisions", float) = 3
+		_LineThickness("lineThickness", float) = 1
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -23,7 +23,6 @@
 		sampler2D _MainTex;
 
 		struct Input {
-			float2 uv_MainTex;
 			float3 worldNormal;
 			float3 worldPos;
 
@@ -34,10 +33,10 @@
 		half _Glossiness;
 		half _Metallic;
 		fixed4 _Color;
-		float _EmissionStrength;
+		half _EmissionStrength;
 		fixed4 _EmissionColor;
-		int _Divisions;
-		int _lineThickness;
+		float _Divisions;
+		float _LineThickness;
 
 		void vert(inout appdata_full i, out Input o)
 		{
@@ -56,7 +55,7 @@
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			// Albedo comes from a texture tinted by color
-			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+			fixed4 c = _Color; //tex2D (_MainTex, IN.uv_MainTex) * _Color;
 			o.Albedo = c.rgb;
 			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
@@ -66,12 +65,11 @@
 
 			float3x3 invTanSpaceMatrix = transpose(float3x3(IN.tangent_input,IN.binormal_input,IN.worldNormal));
 			half3 start = mul(half3(0, 0, 0), invTanSpaceMatrix);
-			half3 end = mul(half3(1, 0, 0), invTanSpaceMatrix);
-			segmentLength = distance(start, end) / _Divisions;
-			float4 emission = _EmissionColor * EmissionStrength;
-			o.Emission = step(distance(start, worldPos) % segmentLenght, _LineThickness) *  emission;
-			o.Emission += step(segmentLength - _LineThickness, distance(start, worldPos) % segmentLenght) * emission;
-		}
+			half3 end = mul(half3(0, 0, 1), invTanSpaceMatrix);
+			float segmentLength = distance(start, end) / _Divisions;
+			float4 emission = _EmissionColor * _EmissionStrength;
+			o.Emission = step(fmod(distance(start, IN.worldPos),segmentLength), _LineThickness) *  emission;
+			o.Emission += step(segmentLength - _LineThickness, fmod(distance(start, IN.worldPos), segmentLength)) * emission;
 		}
 		ENDCG
 	}

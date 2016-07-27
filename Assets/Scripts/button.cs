@@ -6,7 +6,8 @@ public class button : MonoBehaviour , Interactible, PowerProvider {
 	Powerable connectedObject;
 	bool supplyPower = false;
 	public bool toggleButton = true;
-    
+    public Animator animator;
+
 	public void interact () {
 		supplyPower = !supplyPower;
 		if (supplyPower) {
@@ -14,6 +15,7 @@ public class button : MonoBehaviour , Interactible, PowerProvider {
 		} else if (toggleButton) {
 			connectedObject.powerOff (this);
 		}
+        animator.SetBool("ButtonPressed", supplyPower);
 	}
 
 	public void sendReference(Powerable reference) {
