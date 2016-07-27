@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class LockedDoorPart : MonoBehaviour, Debugable {
 
@@ -9,9 +10,16 @@ public class LockedDoorPart : MonoBehaviour, Debugable {
 	FadeEmission fadeEmission;
 	Coroutine coroutine;
     LockedDoorController doorController;
+    [SerializeField]
+    public FadeDoorPartEmission fadePartEmission = new FadeDoorPartEmission();
+    public Renderer emission;
+    public Light pointLight;
 
 	void Awake() {
 		coroutine = StartCoroutine (WaitForDoor ());
+        fadePartEmission.doorPart = this;
+        fadePartEmission.color = emission.material.GetColor("_EmissionColor");
+        setColorAndIntensity(fadePartEmission.color, 0);
 	}
 
 	void Start() {
@@ -19,7 +27,8 @@ public class LockedDoorPart : MonoBehaviour, Debugable {
 		if (fadeEmission == null) {
 			fadeEmission = gameObject.AddComponent<FadeEmission> ();
 		}
-	}
+        setColorAndIntensity(fadePartEmission.color, 0);
+    }
 
 	void Update() {
 		if (isPowered != powered) {
@@ -34,13 +43,13 @@ public class LockedDoorPart : MonoBehaviour, Debugable {
 	public void turnOn () {
 		isPowered = true;
 		powered = true;
-		fadeEmission.turnOn ();
+		fadePartEmission.turnOn ();
 	}
 
 	public void turnOff () {
 		isPowered = false;
 		powered = false;
-		fadeEmission.turnOff ();
+		fadePartEmission.turnOff ();
 	}
 
 	IEnumerator WaitForDoor () {
@@ -73,5 +82,77 @@ public class LockedDoorPart : MonoBehaviour, Debugable {
     public void debug()
     {
         doorController.toggleDoorLockState();
+    }
+
+    public void setColorAndIntensity(Color color, float intensity)
+    {
+        Color emissionColor = color * intensity; // Mathf.LinearToGammaSpace(intensity);
+        emission.material.SetColor("_EmissionColor", emissionColor);
+        DynamicGI.SetEmissive(emission, emissionColor);
+        if (pointLight != null)
+        {
+            pointLight.intensity = intensity;
+            pointLight.color = color;
+        }
+        
+    }
+}
+
+[Serializable]
+public class FadeDoorPartEmission
+{
+    public LockedDoorPart doorPart;
+    public Color color = Color.white;
+    Color currentColor = Color.white;
+    float currentIntensity = 0;
+    float minIntensity = 0;
+    public float maxIntensity = 1;
+    public float animationLength = 1;
+    Coroutine currentCoroutine;
+    public bool debug = false;
+
+
+    public void changeColorAndIntensity(float intensity, Color color)
+    {
+        currentIntensity = intensity;
+        currentColor = color;
+        if (debug)
+        {
+            Debug.Log(intensity);
+        }
+        doorPart.setColorAndIntensity(color, intensity);
+    }
+
+    public void changeColor(Color color)
+    {
+        changeColorAndIntensity(currentIntensity, color);
+    }
+
+    public void changeIntensity(float intensity)
+    {
+        changeColorAndIntensity(intensity, currentColor);
+    }
+
+    public void turnOn()
+    {
+        if (currentColor == Color.white)
+        {
+            currentColor = color;
+        }
+
+        if (currentCoroutine != null)
+        {
+            LerpCoroutine.stopCoroutine(currentCoroutine);
+        }
+        currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength, minIntensity, maxIntensity, currentIntensity, changeIntensity, false);
+    }
+
+    public void turnOff()
+    {
+        if (currentCoroutine != null)
+        {
+            LerpCoroutine.stopCoroutine(currentCoroutine);
+        }
+        currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength, minIntensity, maxIntensity, currentIntensity, changeIntensity, true);
     }
 }

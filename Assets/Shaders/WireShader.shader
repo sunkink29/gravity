@@ -8,6 +8,7 @@
 		_EmissionColor ("Emission Color", Color) = (1,1,1,1)
 		_WireStart ("Wire Start", Vector) = (0,0,0,0)
 		_Distance ("Distance", float) = 0
+		_FalloutDistance("Fallout distance", float) = 0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -39,6 +40,7 @@
 		fixed4 _EmissionColor;
 		float3 _WireStart;
 		float _Distance;
+		float _FalloutDistance;
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			// Albedo comes from a texture tinted by color
@@ -67,7 +69,7 @@
 			//half4 ddirection = half4(step(ed.y, ed.x) * step(ed.z, ed.x), step(ed.x, ed.y) * step(ed.z, ed.y), step(ed.x, ed.z) * step(ed.y, ed.z), 0);
 			//_WireStart = mul(ddirection, _Object2World);
 			float d = distance(_WireStart, IN.worldPos); // mul(float4(IN.WorldPos, 0), _World2Object).xyz);
-			half4 e = _EmissionColor * _EmissionStrength * step(d,_Distance);
+			half4 e = _EmissionColor * _EmissionStrength * step(d, _Distance);// *((IN.worldPos - _Distance) / _FalloutDistance);
 			o.Emission = e.rgb;
 		}
 		ENDCG

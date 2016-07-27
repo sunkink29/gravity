@@ -97,6 +97,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         {
             changeLightState(i, true);
         }
+        ConnectedObject.powerOn(this);
 
 	}
 
@@ -113,6 +114,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         {
             changeLightState(i, false);
         }
+        ConnectedObject.powerOff(this);
     }
 
 	public void sendReference (Powerable reference) {
@@ -174,7 +176,7 @@ public class FadeEmissionLightGroup
 
     public void turnOn()
     {
-        if (currentIntensity != lightInfo.maxIntensity)
+        if (!(lights[0].powered))
         {
             if (currentFloatCoroutine != null)
             {
@@ -182,7 +184,7 @@ public class FadeEmissionLightGroup
             }
             currentFloatCoroutine = LerpCoroutine.LerpMinToMax(animationLength, lightInfo.defaltIntensity, lightInfo.maxIntensity, currentIntensity, changeIntensity, false);
         }
-        if (currentColor != Color.white)
+        if (!(lights[0].powered))
         {
             if (currentColorCoroutine != null)
             {

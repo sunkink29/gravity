@@ -7,6 +7,8 @@ public class DoorKey : MonoBehaviour, Powerable {
     LockedDoorPart[] doorLocks;
     LockedDoorController door;
     public bool unlocked = false;
+    public RoomLightsController roomLights;
+    public GameObject roomLightGameObject;
     void Start () {
         doorLocks = new LockedDoorPart[references.Length];
         for (int i = 0; i < references.Length; i++)
@@ -19,11 +21,25 @@ public class DoorKey : MonoBehaviour, Powerable {
                 doorLocks[i].reference.sendReference(this);
             }
         }
+        if (roomLightGameObject != null)
+        {
+        roomLights = roomLightGameObject.GetComponent<RoomLightsController>();
+
+        }
     }
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (roomLights != null)
+        {
+            if (unlocked && !roomLights.powered)
+            {
+                roomLights.powerOn();
+            } else if (!unlocked && roomLights.powered)
+            {
+                roomLights.powerOff();
+            }
+        }
 	}
 
     public void powerOn () {
@@ -69,6 +85,7 @@ public class DoorKey : MonoBehaviour, Powerable {
         {
             doorLocks[index].turnOff();
         }
+        checkIfUnlocked();
         door.changeLockPowerState(index, state);
     }
 

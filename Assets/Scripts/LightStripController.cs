@@ -4,7 +4,7 @@ using System;
 public enum LightType { pointLight, emissiveLight };
 public enum LightDefaltIntensity { fullStrenght, randomHighIntensity, randomLowIntensity, off }
 
-public class LightStripController : MonoBehaviour, Powerable, Debugable {
+public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Debugable {
 
     public LightType lightType = LightType.emissiveLight;
     public LightDefaltIntensity lightDefaltIntensity = LightDefaltIntensity.randomHighIntensity;
@@ -17,19 +17,29 @@ public class LightStripController : MonoBehaviour, Powerable, Debugable {
     public float maxIntensity = 1;
     System.Random randomGen = new System.Random();
     public bool powered = false;
+    public bool UpdateGI = false;
+    public bool useSlider = false;
+    [Range(0, 1)]
+    public float colorSlider = 0;
+    Powerable connectedObject;
+    public GameObject powerProviderObject;
+    PowerProvider powerProvider;
 
-	// Use this for initialization
-	void Start () {
+    void Awake()
+    {
         if (lightDefaltIntensity == LightDefaltIntensity.fullStrenght)
         {
             defaltIntensity = maxIntensity;
-        }else if (lightDefaltIntensity == LightDefaltIntensity.randomHighIntensity)
+        }
+        else if (lightDefaltIntensity == LightDefaltIntensity.randomHighIntensity)
         {
             defaltIntensity = (float)((randomGen.Next(100) * 0.01) * maxIntensity * .5 + .5);
-        } else if (lightDefaltIntensity == LightDefaltIntensity.randomLowIntensity)
+        }
+        else if (lightDefaltIntensity == LightDefaltIntensity.randomLowIntensity)
         {
             defaltIntensity = (float)((randomGen.Next(100) * 0.01) * maxIntensity * .5);
-        } else if (lightDefaltIntensity == LightDefaltIntensity.off)
+        }
+        else if (lightDefaltIntensity == LightDefaltIntensity.off)
         {
             defaltIntensity = 0;
         }
@@ -38,7 +48,37 @@ public class LightStripController : MonoBehaviour, Powerable, Debugable {
         {
             pointLight.intensity = 0;
         }
+        if (powerProviderObject != null)
+        {
+            powerProvider = powerProviderObject.GetComponent<PowerProvider>();
+            powerProvider.sendReference(this);
+        }
+       
+    }
+
+	// Use this for initialization
+	void Start () {
         setColorAndIntensity(color, defaltIntensity);
+    }
+
+    void Update()
+    {
+        if (UpdateGI)
+        {
+            UpdateGI = false;
+            if (powered)
+            {
+                powerOn();
+            } else
+            {
+                powerOff();
+            }
+        }
+
+        if (useSlider)
+        {
+            setColorAndIntensity(Color.Lerp(color, Color.white, colorSlider),defaltIntensity);
+        }
     }
 
     public void powerOn()
@@ -51,6 +91,10 @@ public class LightStripController : MonoBehaviour, Powerable, Debugable {
 
         powered = true;
         setColorAndIntensity(Color.white, maxIntensity);
+        if (connectedObject != null)
+        {
+        connectedObject.powerOn(this);
+        }
     }  
 
     public void powerOff()
@@ -62,6 +106,15 @@ public class LightStripController : MonoBehaviour, Powerable, Debugable {
     {
         powered = false;
         setColorAndIntensity(color, defaltIntensity);
+        if (connectedObject != null)
+        {
+        connectedObject.powerOff(this);
+        }
+    }
+
+    public void sendReference(Powerable obj)
+    {
+        connectedObject = obj;
     }
 
     public void debug()
@@ -78,9 +131,10 @@ public class LightStripController : MonoBehaviour, Powerable, Debugable {
 
     public void setColorAndIntensity(Color color, float intensity)
     {
-        Color emissionColor = color * Mathf.LinearToGammaSpace(intensity);
+        Color emissionColor = color * intensity; // Mathf.LinearToGammaSpace(intensity);
         emission.material.SetColor("_EmissionColor", emissionColor);
         DynamicGI.SetEmissive(emission,emissionColor);
+        //print(intensity);
         if (lightType == LightType.pointLight)
         {
             pointLight.intensity = intensity;
