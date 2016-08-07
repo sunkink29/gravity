@@ -1,0 +1,10 @@
+freqency is half of the segment length plus half of the line thickness
+if mod(floor(vpos / freqency), 2) is equal to 1
+	if mod(vpos , freqency) is less than or equal to half of the segmet length
+
+if mod(floor(vpos / freqency), 2) is equal to 0
+	if mod(vpos , freqency) is greater than or equal to half of the line thickness
+
+float freqency = 2 / _SegmentLength + 2 / _LineThickness;
+float4 lines = step(1, fmod(floor(vpos / freqency), 2)) * step(fmod(vpos, freqency), 2 / _SegmentLength);
+lines += step(fmod(floor(vpos / freqency), 2), 0) * step(2 / _LineThickness, fmod(vpos, freqency));

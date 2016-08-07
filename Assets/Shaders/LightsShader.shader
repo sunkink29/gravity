@@ -12,6 +12,7 @@ Shader "Custom/LightsShader" {
 		_EmissionColor("Emission Color", Color) = (1,1,1,1)
 		_SegmentLength("Segment Length", float) = 2
 		_LineThickness("lineThickness", float) = .5
+		_GradentLength("gradent Length", float) = .23
 		_MaxLength("MaxLength", float) = 25
 	}
 	SubShader {
@@ -43,6 +44,7 @@ Shader "Custom/LightsShader" {
 		float _MaxLength;
 		sampler2D _MainTex;
 		sampler2D _InfoTex;
+		float _GradentLength;
 
 		void vert(inout appdata_full i, out Input o)
 		{
@@ -64,31 +66,32 @@ Shader "Custom/LightsShader" {
 			float4 i = tex2D(_InfoTex, IN.uv_InfoTex);
 			//o.Albedo = i.r;
 			//o.Emission = i.r;
-			float length = i.g * _MaxLength;
-			float vPos = i.r * length;
-			float halfLineThickness = _LineThickness;
-			_SegmentLength = halfLineThickness + _SegmentLength;
+			float length = i.b * _MaxLength;
+			float vPos = (i.r + i.g) / 2 * length;
+			
+			float freqency = _SegmentLength / 2 + _LineThickness / 2;
+			float4 lines = step(fmod(floor(vPos / freqency), 4), 1) * step(1, fmod(floor(vPos / freqency), 2)) * step(fmod(vPos, freqency),_SegmentLength / 2);
+			lines += step(fmod(floor(vPos / freqency), 4), 1) * step(fmod(floor(vPos / freqency), 2), 0) * step(_LineThickness / 2 , fmod(vPos, freqency));
 
-			//half3 wNormal = UnityObjectToWorldNormal(IN.normal);
-			//half3 wTangent = UnityObjectToWorldDir(IN.tangent.xyz);
-			// compute bitangent from cross product of normal and tangent
-			//half tangentSign = IN.tangent.w * unity_WorldTransformParams.w;
-			//half3 wBitangent = cross(wNormal, wTangent) * tangentSign;
-			// output the tangent space matrix
-			//half3 tspace0 = half3(wTangent.x, wBitangent.x, wNormal.x);
-			//half3 tspace1 = half3(wTangent.y, wBitangent.y, wNormal.y);
-			//half3 tspace2 = half3(wTangent.z, wBitangent.z, wNormal.z);
+			lines += step(2, fmod(floor(vPos / freqency), 4)) * step(1, fmod(floor(vPos / freqency), 2)) * step(fmod(vPos, freqency), _SegmentLength / 2) * emission;
+			lines += step(2, fmod(floor(vPos / freqency), 4)) * step(fmod(floor(vPos / freqency), 2), 0) * step(_LineThickness / 2, fmod(vPos, freqency)) * emission;
+			
+			float halfLineThickness = _LineThickness / 2;
+			float segmentLength = halfLineThickness * 2 + _SegmentLength;
 
-			//float3x3 invTanSpaceMatrix = float3x3(tspace0, tspace1, tspace2);
-			//half3 start = mul(half3(0, 0, 0), invTanSpaceMatrix);
-			//half3 end = mul(half3(0, 0, 1), invTanSpaceMatrix);
-			//float segmentLength = distance(start, end) / _Divisions;
+			//float4 lines = step(halfLineThickness, fmod(vPos, segmentLength));
+			//lines += step(fmod(vPos, segmentLength), segmentLength - halfLineThickness);
+			//lines = lines / 2;
+			//lines = step(1, lines);
 
-			//o.Emission = step(i.r, _SegmentLength);
-			float4 lines = step(halfLineThickness, fmod(vPos, _SegmentLength)) *  emission;
+			//lines += step(halfLineThickness, fmod(vPos, segmentLength)) * emission;
+			//lines += step(fmod(vPos, segmentLength), segmentLength - halfLineThickness) * emission;
+			//lines = lines / 3;
+			//lines = step(1, lines);
+			//lines = fmod(vPos, _SegmentLength);
+
 			o.Emission = lines;
 			//o.Albedo = lines;
-			//o.Emission += step(fmod(vPos, _SegmentLength), _SegmentLength - halfLineThickness) * emission;
 		}
 		ENDCG
 	}

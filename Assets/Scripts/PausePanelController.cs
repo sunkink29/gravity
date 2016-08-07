@@ -7,14 +7,10 @@ public class PausePanelController : MonoBehaviour, Interactible {
     FirstPersonScript player;
     public ScreenManager screenManager;
     public Animator defaltScreen;
-    public Animator teleportScreen;
-    public string teleportName;
+    public TeleportScreenController teleportController;
     public GameObject teleportPoint;
     public bool defaltPanel = false;
-    static PausePanelController[] panels = new PausePanelController[10];
-    public GameObject ButtonTemplete;
-    public int topButtonYposition = 92;
-    public int spaceBetweenButtons = 2;
+    public static PausePanelController[] panels = new PausePanelController[10];
 
     void Awake()
     {
@@ -35,40 +31,25 @@ public class PausePanelController : MonoBehaviour, Interactible {
         {
             interact();
         }
-
-        for (int i = 0; i < panels.Length; i++)
-        {
-            if (panels[i] != null)
-            {
-                PausePanelController panelController = panels[i];
-                GameObject teleportButtonGameObject = (GameObject) Instantiate(ButtonTemplete);
-                Button teleportButton = teleportButtonGameObject.GetComponent<Button>();
-                RectTransform teleportButtonRectTransform = teleportButton.GetComponent<RectTransform>();
-                Text teleportButtonText = teleportButtonGameObject.GetComponentInChildren<Text>();
-                teleportButton.name = panels[i].teleportName;
-                teleportButtonGameObject.SetActive(true);
-                teleportButtonGameObject.transform.SetParent(teleportScreen.gameObject.transform, false);
-                teleportButton.onClick.AddListener(delegate { teleport(panelController); });
-                teleportButtonText.text = panels[i].teleportName;
-                teleportButtonGameObject.transform.localPosition = new Vector3(0, topButtonYposition - (i * spaceBetweenButtons + i * teleportButtonRectTransform.rect.height), 0);
-            }
-        }
 	}
 
     public void interact ()
     {
-        for (int i = 0; i < panels.Length; i++)
+        RaycastHit raycastHit;
+        bool hit = Physics.Raycast(teleportPoint.transform.position, -teleportPoint.transform.up, out raycastHit);
+        player.gravityOnNormals.rayCastGround();
+        if (hit && raycastHit.normal == player.gravityOnNormals.currentDirection)
         {
-            //print(panels[i]);
-        }
-        player.pauseGame();
-        if (player.gamePaused)
-        {
-            teleport(this);
-            screenManager.OpenPanel(defaltScreen);
-        } else
-        {
-            screenManager.CloseCurrent();
+            player.pauseGame();
+            if (player.gamePaused)
+            {
+                teleport(this);
+                screenManager.OpenPanel(defaltScreen);
+            }
+            else
+            {
+                screenManager.CloseCurrent();
+            }
         }
     }
 
@@ -82,12 +63,7 @@ public class PausePanelController : MonoBehaviour, Interactible {
 
     public void teleport(PausePanelController nextPanel)
     {
-        nextPanel.screenManager.OpenPanel(nextPanel.teleportScreen);
-        player.gameObject.transform.position = nextPanel.teleportPoint.transform.position;
-        player.gameObject.transform.rotation = nextPanel.teleportPoint.transform.rotation;
-        player.playerCamera.transform.rotation = new Quaternion(0, 0, 0, 0);
-        player.gravityOnNormals.rayCastGround();
-        screenManager.CloseCurrent();
+        teleportController.teleport(nextPanel);
     }
 }
 

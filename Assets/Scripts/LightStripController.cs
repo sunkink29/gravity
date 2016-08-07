@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public enum LightType { pointLight, emissiveLight };
 public enum LightDefaltIntensity { fullStrenght, randomHighIntensity, randomLowIntensity, off }
@@ -13,6 +14,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     float defaltIntensity;
     //Color defaltEmissionColor;
     //Color maxEmissionColor;
+    public bool useCustomColor = false;
     public Color color = Color.white;
     public float maxIntensity = 1;
     System.Random randomGen = new System.Random();
@@ -47,6 +49,10 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
         if (lightType == LightType.emissiveLight && pointLight != null)
         {
             pointLight.intensity = 0;
+        } else if (lightType == LightType.pointLight && pointLight != null)
+        {
+            pointLight.enabled = true;
+            pointLight.gameObject.SetActive(true);
         }
         if (powerProviderObject != null)
         {
@@ -54,6 +60,35 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
             powerProvider.sendReference(this);
         }
        
+    }
+
+    public void setup(LightColorSource colorSource)
+    {
+        LightColorSource[] colorChain = colorSource.colorSources;
+        List<LightColorSource> colorSources = new List<LightColorSource>();
+        for(int i = 0; i < colorChain.Length; i++)
+        {
+            colorSources.Add(colorChain[i]);
+        }
+        colorSources.Sort(isCloser);
+
+    }
+
+    public int isCloser(LightColorSource x, LightColorSource y)
+    {
+        float xDistance = Vector3.Distance(transform.position, x.transform.position);
+        float yDistance = Vector3.Distance(transform.position, y.transform.position);
+
+        if (xDistance < yDistance)
+        {
+            return -1;
+        } else if (xDistance == yDistance)
+        {
+            return 0;
+        } else
+        {
+            return 1;
+        }
     }
 
 	// Use this for initialization

@@ -13,6 +13,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
     FadeEmissionLightGroup[] lightGroups;
     public bool powered;
     public float animationLength = 2;
+    public LightColorSource colorSource;
 
 	// Use this for initialization
 	void Start () {
@@ -97,7 +98,10 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         {
             changeLightState(i, true);
         }
+        if (ConnectedObject != null)
+        {
         ConnectedObject.powerOn(this);
+        }
 
 	}
 
@@ -114,7 +118,10 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         {
             changeLightState(i, false);
         }
+        if (ConnectedObject != null)
+        {
         ConnectedObject.powerOff(this);
+        }
     }
 
 	public void sendReference (Powerable reference) {
