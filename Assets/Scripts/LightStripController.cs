@@ -11,7 +11,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     public LightDefaltIntensity lightDefaltIntensity = LightDefaltIntensity.randomHighIntensity;
     public Light pointLight;
     public Renderer emission;
-    float defaltIntensity;
+    public float defaltIntensity;
     //Color defaltEmissionColor;
     //Color maxEmissionColor;
     public bool useCustomColor = false;
@@ -35,7 +35,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
         }
         else if (lightDefaltIntensity == LightDefaltIntensity.randomHighIntensity)
         {
-            defaltIntensity = (float)((randomGen.Next(100) * 0.01) * maxIntensity * .5 + .5);
+			defaltIntensity = (float)((randomGen.Next(100) * 0.01) * maxIntensity * .5 + maxIntensity * .5);
         }
         else if (lightDefaltIntensity == LightDefaltIntensity.randomLowIntensity)
         {

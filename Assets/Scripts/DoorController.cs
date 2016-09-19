@@ -4,47 +4,57 @@ using System.Collections;
 public class DoorController : MonoBehaviour , Powerable {
 
 	Animator animator;
+	public GameObject powerProviderGameObject;
+	PowerProvider powerProvider;
 	bool open;
 	[SerializeField] bool doorOpened = false;
 
 	// Use this for initialization
 	public virtual void Start () {
 		animator = GetComponent<Animator> ();
+		animator.SetBool ("DoorUnlocked",true);
+		if (powerProviderGameObject != null) {
+			powerProvider = powerProviderGameObject.GetComponent<PowerProvider> ();
+			if (powerProvider != null) {
+				powerProvider.sendReference (this);
+				animator.SetBool ("DoorUnlocked",false);
+			}
+		}
 	}
 	
 	// Update is called once per frame
 	public virtual void Update () {
 		if (doorOpened != open) {
 			if (doorOpened) {
-				powerOn ();
+				animateDoor (true);
 			} else {
-				powerOff ();
+				animateDoor (false);
 			}
 		}
 	}
 
 	public virtual void OnTriggerEnter (Collider collider) {
-		powerOn ();
+		animateDoor (true);
 	}
 
 	public virtual void OnTriggerExit (Collider collider) {
-		powerOff ();
+		animateDoor (false);
 	}
 
 	public void powerOn () {
-		animateDoor (true);
+		animator.SetBool ("DoorUnlocked",true);
 	}
 
 	public virtual void powerOn (PowerProvider reference) {
-		animateDoor (true);
+		animator.SetBool ("DoorUnlocked",true);
 	}
 
 	public void powerOff () {
-		animateDoor (false);
+		animator.SetBool ("DoorUnlocked",false);
 	}
 
 	public virtual void powerOff (PowerProvider reference) {
-		animateDoor (false);
+		animator.SetBool ("DoorUnlocked",false);
 	}
 
 	void animateDoor (bool state) {

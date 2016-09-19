@@ -11,8 +11,9 @@ public class ConsoleCommandRouter : MonoBehaviour {
         noClipEnabled = FirstPersonScript.player.noClipEnabled;
         cheatsEnabled = FirstPersonScript.player.cheatsEnabled;
 //		repo.RegisterCommand("save", Save);
-		repo.RegisterCommand("noclip", NoClip);
-        repo.RegisterCommand("enableCheats", EnableCheats);
+		repo.RegisterCommand ("noclip", NoClip);
+        repo.RegisterCommand ("enableCheats", EnableCheats);
+		repo.RegisterCommand ("changeRoomLights", ChangeRoomLights);
 	}
 //
 //	public string Save(params string[] args) {
@@ -63,4 +64,25 @@ public class ConsoleCommandRouter : MonoBehaviour {
         }
         return "cheats " + cheatsStatus;
     }
+
+	public string ChangeRoomLights(params string[] args) {
+		if (!cheatsEnabled) {
+			return "Acess Denied";
+		}
+		RoomLightsController room;
+		for (int i = 0; i < RoomLightsController.AllRooms.Count; i++) {
+			room = RoomLightsController.AllRooms [i];
+			if (room.roomName.ToLower() == (args [0].ToLower())) {
+				if (args[1].ToLower().Contains("on")) {
+					room.powerOn ();
+					return room.roomName + " room turned on";
+				} else if (args[1].ToLower().Contains("off")) {
+					room.powerOff ();
+					return room.roomName + " room turned off";
+				}
+				return "specify whether to turn the room Off or On";
+			}
+		}
+		return "specify the room to change the lights";
+	}
 }

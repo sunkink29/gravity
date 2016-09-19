@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DoorKey : MonoBehaviour, Powerable {
+public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
 
     public GameObject[] references;
     LockedDoorPart[] doorLocks;
     LockedDoorController door;
+	Powerable powerable;
     public bool unlocked = false;
     public RoomLightsController roomLights;
     public GameObject roomLightGameObject;
@@ -29,18 +30,18 @@ public class DoorKey : MonoBehaviour, Powerable {
     }
 	
 	// Update is called once per frame
-	void Update () {
-        if (roomLights != null)
-        {
-            if (unlocked && !roomLights.powered)
-            {
-                roomLights.powerOn();
-            } else if (!unlocked && roomLights.powered)
-            {
-                roomLights.powerOff();
-            }
-        }
-	}
+//	void Update () {
+//        if (roomLights != null)
+//        {
+//            if (unlocked && !roomLights.powered)
+//            {
+//                roomLights.powerOn();
+//            } else if (!unlocked && roomLights.powered)
+//            {
+//                roomLights.powerOff();
+//            }
+//        }
+//	}
 
     public void powerOn () {
         powerOn(null);
@@ -49,15 +50,21 @@ public class DoorKey : MonoBehaviour, Powerable {
     public void powerOn(PowerProvider reference) {
         if (reference != null)
         {
+			float numOn = 0;
             for (int i = 0; i < doorLocks.Length; i++)
             {
                 if (doorLocks[i].reference == reference)
                 {
                     changeLockPowerState(i, true);
-                    break;
                 }
+				if (doorLocks [i].isPowered) {
+					numOn++;
+				}
             }
-        }
+			if (roomLights != null) {
+				roomLights.powerOn (numOn / doorLocks.Length);
+			}        
+		}
     } 
 
     public void powerOff () {
@@ -65,14 +72,20 @@ public class DoorKey : MonoBehaviour, Powerable {
     }
 
     public void powerOff(PowerProvider reference) {
-        for (int i = 0; i < doorLocks.Length; i++)
-        {
-            if (doorLocks[i].reference == reference)
-            {
-                changeLockPowerState(i, false);
-                break;
-            }
-        }
+		if (reference != null) {
+			int numOn = 0;
+			for (int i = 0; i < doorLocks.Length; i++) {
+				if (doorLocks [i].reference == reference) {
+					changeLockPowerState (i, false);
+				}
+				if (doorLocks [i].isPowered) {
+					numOn++;
+				}
+			}
+			if (roomLights != null) {
+				roomLights.powerOff (numOn / doorLocks.Length);
+			}
+		}
     }
 
     public void changeLockPowerState(int index, bool state)
@@ -86,7 +99,9 @@ public class DoorKey : MonoBehaviour, Powerable {
             doorLocks[index].turnOff();
         }
         checkIfUnlocked();
-        door.changeLockPowerState(index, state);
+		if (door != null) {
+			door.changeLockPowerState (index, state);
+		}
     }
 
     void checkIfUnlocked()
@@ -99,15 +114,26 @@ public class DoorKey : MonoBehaviour, Powerable {
                 locksPowered++;
             }
         }
-        unlocked = false;
-        if (locksPowered == doorLocks.Length)
-        {
-            unlocked = true;
-        }
+		if (locksPowered == doorLocks.Length && !unlocked) {
+			unlocked = true;
+			if (powerable != null) {
+				powerable.powerOn ();
+			}
+		} else if (locksPowered != doorLocks.Length && unlocked){
+			unlocked = false;
+			if (powerable != null) {
+				powerable.powerOff ();
+			}
+		}
     }
 
-    public void sendReference(LockedDoorController reference) {
+	public void sendReference(LockedDoorController reference) {
         door = reference;
-        print(reference);
+        //print(reference);
     }
+
+	public void sendReference(Powerable reference) {
+		powerable = reference;
+		//print(reference);
+	}
 }

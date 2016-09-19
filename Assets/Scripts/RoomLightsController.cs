@@ -14,9 +14,14 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
     public bool powered;
     public float animationLength = 2;
     public LightColorSource colorSource;
+	public string roomName;
+	public static List<RoomLightsController> AllRooms = new List<RoomLightsController>();
+	Coroutine currentCoroutine;
+	float coroutineCurrentPoint = 0;
 
 	// Use this for initialization
 	void Start () {
+		AllRooms.Add (this);
         lightStripObjects = GetComponentsInChildren<LightStripController>();
         List<List<LightStripController>> lightStripGroups = new List<List<LightStripController>>(20);
         int numberOfGroups = 0;
@@ -64,15 +69,15 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	    if (powered && !(lightStripObjects[0].powered))
-        {
-            powerOn();
-        } else if (!powered && lightStripObjects[0].powered)
-        {
-            powerOff();
-        }
-	}
+//	void Update () {
+//	    if (powered && !(lightStripObjects[0].powered))
+//        {
+//            powerOn();
+//        } else if (!powered && lightStripObjects[0].powered)
+//        {
+//            powerOff();
+//        }
+//	}
 
     void changeLightState(int index, bool state)
     {
@@ -94,15 +99,34 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         //ConnectedObject.powerOn (this);
 
         powered = true;
-        for (int i = 0; i < lightGroups.Length; i++)
-        {
-            changeLightState(i, true);
-        }
+//        for (int i = 0; i < lightGroups.Length; i++)
+//        {
+//            changeLightState(i, true);
+//        }
+
+		if (currentCoroutine != null) {
+			LerpCoroutine.stopCoroutine (currentCoroutine);
+		}
+		LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,false);
+
         if (ConnectedObject != null)
         {
         ConnectedObject.powerOn(this);
         }
 
+	}
+
+	public void powerOn (float num) {
+		if (currentCoroutine != null) {
+			LerpCoroutine.stopCoroutine (currentCoroutine);
+		}
+		LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,false);
+		if (num == 1) {
+			powered = true;
+			if (ConnectedObject != null) {
+				ConnectedObject.powerOn (this);
+			}
+		}
 	}
 
 	public void powerOff () {
@@ -114,30 +138,46 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
         //ConnectedObject.powerOff (this);
 
         powered = false;
-        for (int i = 0; i < lightGroups.Length; i++)
-        {
-            changeLightState(i, false);
-        }
+//        for (int i = 0; i < lightGroups.Length; i++)
+//        {
+//            changeLightState(i, false);
+//        }
+
+		if (currentCoroutine != null) {
+			LerpCoroutine.stopCoroutine (currentCoroutine);
+		}
+		LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,true);
+
         if (ConnectedObject != null)
         {
         ConnectedObject.powerOff(this);
         }
     }
+	//ToDo: use an array of ints to power things on, where the first int is a hash for the object it comes from and the second int for the strength of the signal
+	public void powerOff (float num) {
+		if (currentCoroutine != null) {
+			LerpCoroutine.stopCoroutine (currentCoroutine);
+		}
+		LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,true);
+
+		powered = false;
+		if (ConnectedObject != null) {
+			ConnectedObject.powerOff (this);
+		}
+	}
 
 	public void sendReference (Powerable reference) {
 		ConnectedObject = reference;
 	}
 
-    public Coroutine startCorutine(IEnumerator routine)
-    {
-        Debug.Log("startCorutine Called " + routine);
-        return startCorutine(routine);
-    }
-
-    public void stopCorutine(Coroutine corutine)
-    {
-        stopCorutine(corutine);
-    }
+	public void changeAllLights(float t) {
+		for (int i = 0; i < lightStripObjects.Length; i++) {
+			LightStripController lightStrip = lightStripObjects [i];
+			lightStrip.setColorAndIntensity (Color.Lerp(lightStrip.color,Color.white,t),
+				Mathf.Lerp(lightStrip.defaltIntensity,lightStrip.maxIntensity,t));
+		}
+		coroutineCurrentPoint = t;
+	}
 }
 
 [Serializable]
