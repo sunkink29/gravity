@@ -8,6 +8,8 @@ public interface Powerable {
 
 	void powerOff ();
 	void powerOff (PowerProvider reference);
+
+	void changePower (float[] powerArgs);
 }
 
 public interface Interactible {

@@ -57,6 +57,16 @@ public class DoorController : MonoBehaviour , Powerable {
 		animator.SetBool ("DoorUnlocked",false);
 	}
 
+	public virtual void changePower(float[] powerArgs) {
+		bool doorUnlocked;
+		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
+			doorUnlocked = true;
+		} else {
+			doorUnlocked = false;
+		}
+		animator.SetBool ("DoorUnlocked", doorUnlocked);
+	}
+
 	void animateDoor (bool state) {
 		animator.SetBool ("DoorOpen", state);
 		animator.SetBool ("DoorClosed", !state);

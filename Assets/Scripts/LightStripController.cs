@@ -147,6 +147,25 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
         }
     }
 
+	public void changePower(float[] powerArgs) {
+		Color color;
+		float intensity;
+		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
+			powered = true;
+			color = Color.white;
+			intensity = maxIntensity;
+		} else {
+			powered = false;
+			color = this.color;
+			intensity = defaltIntensity;
+		}
+		setColorAndIntensity (color, intensity);
+		if (connectedObject != null && powerArgs.Length >= 2) {
+			powerArgs [0] = this.GetInstanceID ();
+			connectedObject.changePower(powerArgs);
+		}
+	}
+
     public void sendReference(Powerable obj)
     {
         connectedObject = obj;

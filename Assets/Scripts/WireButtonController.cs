@@ -54,7 +54,7 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 			yield return null;
 		}
 		if (connectedObjectScript != null) {
-			connectedObjectScript.powerOn (this);
+			connectedObjectScript.changePower (new float[]{ this.GetInstanceID (), 1 });
 		}
     }
 
@@ -81,6 +81,24 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 			fadeEmission.turnOff ();
 			if (connectedObjectScript != null) {
 				connectedObjectScript.powerOff (this);
+			}
+		}
+	}
+
+	public void changePower(float[] powerArgs) {
+		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
+			isPowered = true;
+			fadeEmission.turnOn ();
+			coroutine = StartCoroutine(waitForFullEmission());
+		} else {
+			isPowered = false;
+			if (coroutine != null) {
+				StopCoroutine (coroutine);
+			}
+			fadeEmission.turnOff ();
+			if (connectedObjectScript != null) {
+				powerArgs [0] = this.GetInstanceID ();
+				connectedObjectScript.changePower(powerArgs);
 			}
 		}
 	}

@@ -165,6 +165,28 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 			ConnectedObject.powerOff (this);
 		}
 	}
+	
+	public void changePower(float[] powerArgs) {
+		bool powered;
+		float num = powerArgs [1];
+		float dif = num - coroutineCurrentPoint;
+		if (dif >= 0) {
+			powered = true;
+		} else {
+			powered = false;
+		}
+		if (currentCoroutine != null) {
+			LerpCoroutine.stopCoroutine (currentCoroutine);
+		}
+		print (dif);
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength*Mathf.Abs(dif),coroutineCurrentPoint,num,coroutineCurrentPoint,changeAllLights,powered);
+
+		powered = false;
+		if (ConnectedObject != null) {
+			powerArgs [0] = this.GetInstanceID ();
+			ConnectedObject.changePower (powerArgs);
+		}
+	}
 
 	public void sendReference (Powerable reference) {
 		ConnectedObject = reference;
