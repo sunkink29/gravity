@@ -5,25 +5,47 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 
 	Collider currentCollider;
 	[SerializeField] bool isPowered;
-	public GameObject connectedObject;
 	public GameObject powerProviderObject;
-	Powerable connectedObjectScript;
+	public Renderer objectRenderer;
+	public Transform startPoint;
+	public Transform endPoint;
+	public float speed = .1f;
+	Color baseColor;
+	Material mat;
+	float currentPoint;
+	Powerable connectedObject;
 	PowerProvider powerProvider;
 	FadeEmission fadeEmission;
 	Coroutine coroutine;
+	float[] currentPowerArgs;
+
 
 	// Use this for initialization
 	void Start () {
-		fadeEmission = GetComponent<FadeEmission> ();
-		if (fadeEmission == null) {
-			fadeEmission = gameObject.AddComponent<FadeEmission> ();
+//		fadeEmission = GetComponent<FadeEmission> ();
+//		if (fadeEmission == null) {
+//			fadeEmission = gameObject.AddComponent<FadeEmission> ();
+//		}
+		if (LerpCoroutine.currentInstance == null)
+		{
+			LerpCoroutine lerpCoroutine = gameObject.AddComponent<LerpCoroutine>();
+			lerpCoroutine.Awake();
 		}
-		if (Application.isEditor) {
-			StartCoroutine (checkIfPowered ());
-		}
-//		connectedObjectScript = connectedObject.GetComponent<Powerable> ();
+//		if (Application.isEditor) {
+//			StartCoroutine (checkIfPowered ());
+//		}
 		powerProvider = powerProviderObject.GetComponent<PowerProvider> ();
 		powerProvider.sendReference (this);
+		Material[] materials = objectRenderer.materials;
+		if (materials.Length >= 2) {
+			mat = materials [1];
+		} else {
+			mat = objectRenderer.material;
+		}
+		baseColor = mat.GetColor ("_EmissionColor");
+		mat.SetVector ("_WireStart", startPoint.position);
+		mat.SetFloat ("_Distance", 0);
+		DynamicGI.UpdateMaterials (objectRenderer);
 	}
 
 	void OnTriggerEnter (Collider collider) {
@@ -53,8 +75,8 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 		while (!fadeEmission.atMaxEmission) {
 			yield return null;
 		}
-		if (connectedObjectScript != null) {
-			connectedObjectScript.changePower (new float[]{ this.GetInstanceID (), 1 });
+		if (connectedObject != null) {
+			connectedObject.changePower (new float[]{ this.GetInstanceID (), 1 });
 		}
     }
 
@@ -65,8 +87,10 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 	public void powerOn (PowerProvider reference){
 		if (!isPowered) {
 			isPowered = true;
-			fadeEmission.turnOn ();
-			coroutine = StartCoroutine(waitForFullEmission());
+			LerpCoroutine.LerpMinToMax(Vector3.Distance(startPoint.position,endPoint.position)*speed,0,
+				Vector3.Distance(startPoint.position,endPoint.position),currentPoint,changeWireDistance,false);
+			//fadeEmission.turnOn ();
+			//coroutine = StartCoroutine(waitForFullEmission());
 		}
 	}
 
@@ -78,33 +102,47 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 		if (isPowered) {
 			StopCoroutine (coroutine);
 			isPowered = false;
-			fadeEmission.turnOff ();
-			if (connectedObjectScript != null) {
-				connectedObjectScript.powerOff (this);
-			}
+			changeWireDistance (0);
+//			fadeEmission.turnOff ();
+//			if (connectedObject != null) {
+//				connectedObject.powerOff (this);
+//			}
 		}
 	}
 
 	public void changePower(float[] powerArgs) {
+		currentPowerArgs = powerArgs;
 		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
 			isPowered = true;
-			fadeEmission.turnOn ();
-			coroutine = StartCoroutine(waitForFullEmission());
+			LerpCoroutine.LerpMinToMax (Vector3.Distance (startPoint.position, endPoint.position) * speed, 0,
+				Vector3.Distance (startPoint.position, endPoint.position), currentPoint, changeWireDistance, false);
+//			fadeEmission.turnOn ();
+//			coroutine = StartCoroutine(waitForFullEmission());
 		} else {
 			isPowered = false;
-			if (coroutine != null) {
-				StopCoroutine (coroutine);
-			}
-			fadeEmission.turnOff ();
-			if (connectedObjectScript != null) {
+//			if (coroutine != null) {
+//				StopCoroutine (coroutine);
+//			}
+//			fadeEmission.turnOff ();
+			if (connectedObject != null) {
 				powerArgs [0] = this.GetInstanceID ();
-				connectedObjectScript.changePower(powerArgs);
+				connectedObject.changePower(powerArgs);
 			}
 		}
 	}
 
+	public void changeWireDistance (float distance) {
+		mat.SetFloat ("_Distance", distance);
+		DynamicGI.UpdateMaterials (objectRenderer);
+		currentPoint = distance;
+		if (distance / Vector3.Distance (startPoint.position, endPoint.position) == 1) {
+			currentPowerArgs [0] = GetInstanceID ();
+			connectedObject.changePower (currentPowerArgs);
+		}
+	}
+
 	public void sendReference(Powerable reference) {
-		connectedObjectScript = reference;
+		connectedObject = reference;
 	}
 
     public void debug() {

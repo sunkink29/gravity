@@ -107,7 +107,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		if (currentCoroutine != null) {
 			LerpCoroutine.stopCoroutine (currentCoroutine);
 		}
-		LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,false);
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,false);
 
         if (ConnectedObject != null)
         {
@@ -120,7 +120,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		if (currentCoroutine != null) {
 			LerpCoroutine.stopCoroutine (currentCoroutine);
 		}
-		LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,false);
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,false);
 		if (num == 1) {
 			powered = true;
 			if (ConnectedObject != null) {
@@ -146,7 +146,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		if (currentCoroutine != null) {
 			LerpCoroutine.stopCoroutine (currentCoroutine);
 		}
-		LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,true);
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,true);
 
         if (ConnectedObject != null)
         {
@@ -158,7 +158,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		if (currentCoroutine != null) {
 			LerpCoroutine.stopCoroutine (currentCoroutine);
 		}
-		LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,true);
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,true);
 
 		powered = false;
 		if (ConnectedObject != null) {
