@@ -1,4 +1,7 @@
-﻿Shader "Custom/none" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Custom/none" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
@@ -42,8 +45,8 @@
 		{
 			UNITY_INITIALIZE_OUTPUT(Input, o);
 
-			half4 p_normal = mul(float4(i.normal, 0.0f), _World2Object);
-			half4 p_tangent = mul(_Object2World, i.tangent);
+			half4 p_normal = mul(float4(i.normal, 0.0f), unity_WorldToObject);
+			half4 p_tangent = mul(unity_ObjectToWorld, i.tangent);
 
 			half3 normal_input = normalize(p_normal.xyz);
 			half3 tangent_input = normalize(p_tangent.xyz);

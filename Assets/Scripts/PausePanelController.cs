@@ -63,6 +63,7 @@ public class PausePanelController : MonoBehaviour, Interactible {
 
     public void teleport(PausePanelController nextPanel)
     {
+		player.GetComponent<Rigidbody> ().velocity = new Vector3(0,0);
         teleportController.teleport(nextPanel);
     }
 }

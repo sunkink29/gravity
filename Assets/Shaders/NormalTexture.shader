@@ -1,4 +1,6 @@
-﻿Shader "Unlit/NormalTexture"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Unlit/NormalTexture"
 {
 	Properties
 	{
@@ -37,7 +39,7 @@
 			{
 				v2f OUT;
 				OUT.pos = mul(UNITY_MATRIX_MVP, IN.vertex);
-				OUT.normal = mul(float4(IN.normal,0.0), _Object2World).xyz;
+				OUT.normal = mul(float4(IN.normal,0.0), unity_ObjectToWorld).xyz;
 				OUT.texcoord = IN.texcoord;
 				return OUT;
 			}

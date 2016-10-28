@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 #ifndef UNITY_Custom_WIRE_STANDARD_STANDARD_META_INCLUDED
 #define UNITY_Custom_WIRE_STANDARD_STANDARD_META_INCLUDED
 
@@ -48,7 +50,7 @@ float4 frag_meta (v2f_meta i) : SV_Target
 	UNITY_INITIALIZE_OUTPUT(UnityMetaInput, o);
 
 	o.Albedo = UnityLightmappingAlbedo (data.diffColor, data.specColor, data.oneMinusRoughness);
-	float d = distance(WireStart(), mul(_Object2World, i.pos));
+	float d = distance(WireStart(), mul(unity_ObjectToWorld, i.pos));
 	o.Emission = Emission(i.uv.xy) * step(d, Distance());
 
 	return UnityMetaFragment(o);

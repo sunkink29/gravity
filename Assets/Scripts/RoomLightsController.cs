@@ -178,10 +178,10 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		if (currentCoroutine != null) {
 			LerpCoroutine.stopCoroutine (currentCoroutine);
 		}
-		print (dif);
-		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength*Mathf.Abs(dif),coroutineCurrentPoint,num,coroutineCurrentPoint,changeAllLights,powered);
+		//print (animationLength*Mathf.Abs(dif));
+		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength*Mathf.Abs(dif),coroutineCurrentPoint,num,coroutineCurrentPoint,changeAllLights,false);
 
-		powered = false;
+		//powered = false;
 		if (ConnectedObject != null) {
 			powerArgs [0] = this.GetInstanceID ();
 			ConnectedObject.changePower (powerArgs);

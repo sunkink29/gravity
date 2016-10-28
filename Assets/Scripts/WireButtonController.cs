@@ -113,16 +113,19 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 	public void changePower(float[] powerArgs) {
 		currentPowerArgs = powerArgs;
 		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
+			if (isPowered == false) {
+				coroutine = LerpCoroutine.LerpMinToMax (Vector3.Distance (startPoint.position, endPoint.position) * speed, 0,
+					Vector3.Distance (startPoint.position, endPoint.position), currentPoint, changeWireDistance, false);
+			}
 			isPowered = true;
-			LerpCoroutine.LerpMinToMax (Vector3.Distance (startPoint.position, endPoint.position) * speed, 0,
-				Vector3.Distance (startPoint.position, endPoint.position), currentPoint, changeWireDistance, false);
 //			fadeEmission.turnOn ();
 //			coroutine = StartCoroutine(waitForFullEmission());
 		} else {
 			isPowered = false;
-//			if (coroutine != null) {
-//				StopCoroutine (coroutine);
-//			}
+			changeWireDistance (0);
+			if (coroutine != null) {
+				StopCoroutine (coroutine);
+			}
 //			fadeEmission.turnOff ();
 			if (connectedObject != null) {
 				powerArgs [0] = this.GetInstanceID ();

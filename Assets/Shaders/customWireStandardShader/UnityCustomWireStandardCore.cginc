@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 #ifndef UNITY_Custom_WIRE_STANDARD_CORE_INCLUDED
 #define UNITY_Custom_WIRE_STANDARD_CORE_INCLUDED
 
@@ -365,7 +367,7 @@ VertexOutputForwardBase vertForwardBase (VertexInput v)
 	VertexOutputForwardBase o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputForwardBase, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 	#if UNITY_SPECCUBE_BOX_PROJECTION
 		o.posWorld = posWorld.xyz;
 	#endif
@@ -422,7 +424,7 @@ half4 fragForwardBaseInternal (VertexOutputForwardBase i)
 
 	half4 c = UNITY_BRDF_PBS (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, gi.light, gi.indirect);
 	c.rgb += UNITY_BRDF_GI (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, occlusion, gi);
-	float d = distance(WireStart(), mul(_Object2World,i.pos));
+	float d = distance(WireStart(), mul(unity_ObjectToWorld,i.pos));
 	c.rgb += Emission(i.tex.xy) * step(d,Distance());
 
 	UNITY_APPLY_FOG(i.fogCoord, c.rgb);
@@ -457,7 +459,7 @@ VertexOutputForwardAdd vertForwardAdd (VertexInput v)
 	VertexOutputForwardAdd o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputForwardAdd, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 	o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 	o.tex = TexCoords(v);
 	o.eyeVec = NormalizePerVertexNormal(posWorld.xyz - _WorldSpaceCameraPos);
@@ -541,7 +543,7 @@ VertexOutputDeferred vertDeferred (VertexInput v)
 	VertexOutputDeferred o;
 	UNITY_INITIALIZE_OUTPUT(VertexOutputDeferred, o);
 
-	float4 posWorld = mul(_Object2World, v.vertex);
+	float4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 	#if UNITY_SPECCUBE_BOX_PROJECTION
 		o.posWorld = posWorld;
 	#endif
@@ -626,7 +628,7 @@ void fragDeferred (
 	color += UNITY_BRDF_GI (s.diffColor, s.specColor, s.oneMinusReflectivity, s.oneMinusRoughness, s.normalWorld, -s.eyeVec, occlusion, gi);
 
 	#ifdef _EMISSION
-		float d = distance(WireStart(), mul(_Object2World, i.pos));
+		float d = distance(WireStart(), mul(unity_ObjectToWorld, i.pos));
 		color += Emission (i.tex.xy) * step(d, Distance());
 	#endif
 
