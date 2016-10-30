@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CubeController : MonoBehaviour {
+public class CubeController : MonoBehaviour , Interactible {
 
 	public bool useGravity = true;
 	public Vector3 gravityDirection;
 	public float gravityStrenth = 5f;
+	public float cubeMass = 10;
 	[HideInInspector]public Rigidbody objectRigidbody;
 	CubeSpringSettings cubeControllerSettings;
 	SpringJoint springJoint;
@@ -22,8 +23,9 @@ public class CubeController : MonoBehaviour {
 			objectRigidbody = GetComponent<Rigidbody> ();
 		}
 		gameObject.tag = "liftable";
-		objectRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-		objectRigidbody.useGravity = false;
+//		objectRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+//		objectRigidbody.useGravity = false;
+		objectRigidbody.mass = cubeMass;
 	}
 
 	void FixedUpdate () {
@@ -68,22 +70,22 @@ public class CubeController : MonoBehaviour {
 	void gravity () {
 		RaycastHit hitInfo;
 		Physics.Raycast (transform.position, gravityDirection * -1, out hitInfo);
-		if (hitInfo.distance <= .1f + .5f) {
-			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-			objectRigidbody.isKinematic = true;
-		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-			objectRigidbody.isKinematic = true;
-		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-			objectRigidbody.isKinematic = true;
-		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-			objectRigidbody.isKinematic = true;
-		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-			objectRigidbody.isKinematic = true;
-		}
+//		if (hitInfo.distance <= .1f + .5f) {
+//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//			objectRigidbody.isKinematic = true;
+//		} else if (Physics.Raycast (transform.positi on + new Vector3 (1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//			objectRigidbody.isKinematic = true;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//			objectRigidbody.isKinematic = true;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//			objectRigidbody.isKinematic = true;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
+//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//			objectRigidbody.isKinematic = true;
+//		}
 		objectRigidbody.AddForce ( gravityStrenth * gravityDirection * -1 * Time.fixedTime,ForceMode.Acceleration);
 	}
 
@@ -120,4 +122,11 @@ public class CubeController : MonoBehaviour {
 		gameObject.layer = 1;
 	}
 
+	public void interact() {
+		if (!objectPickedUp) {
+			pickUpObject (FirstPersonScript.player);
+		} else {
+			dropObject ();
+		}
+	}
 }
