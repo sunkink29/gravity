@@ -204,6 +204,10 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
         lightInfo.color = color;
         return lightInfo;
     }
+
+	public GameObject getGameObject() {
+		return gameObject;
+	}
 }
 
 [Serializable]

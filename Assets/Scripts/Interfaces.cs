@@ -10,6 +10,7 @@ public interface Powerable {
 	void powerOff (PowerProvider reference);
 
 	void changePower (float[] powerArgs);
+	GameObject getGameObject();
 }
 
 public interface Interactible {

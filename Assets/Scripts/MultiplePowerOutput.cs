@@ -6,12 +6,12 @@ using System.Collections.Generic;
 public class MultiplePowerOutput : MonoBehaviour , Powerable, PowerProvider {
 
 	List<Powerable> powerables = new List<Powerable>();
-	public GameObject powerProviderGameObject;
+	public MonoBehaviour powerProviderMonoBehaviour;
 	PowerProvider powerProvider;
 
 	// Use this for initialization
 	void Start () {
-		powerProvider = powerProviderGameObject.GetComponent<PowerProvider> ();
+		powerProvider = (PowerProvider) powerProviderMonoBehaviour;
 		powerProvider.sendReference (this);
 	}
 
@@ -40,5 +40,9 @@ public class MultiplePowerOutput : MonoBehaviour , Powerable, PowerProvider {
 
 	public void sendReference(Powerable reference) {
 		powerables.Add (reference);
+	}
+
+	public GameObject getGameObject() {
+		return gameObject;
 	}
 }

@@ -5,7 +5,9 @@ public class MoveWhenPowered : MonoBehaviour, Powerable {
 
 	public GameObject powerProviderGameObject;
 	public Transform startingPoint;
+	public Transform endingPoint;
 	public float speed = 1;
+	float amountOfTime = 1;
 	Vector3 startPoint;
 	Vector3 endPoint;
 	PowerProvider powerProvider;
@@ -17,7 +19,11 @@ public class MoveWhenPowered : MonoBehaviour, Powerable {
 		powerProvider = powerProviderGameObject.GetComponent<PowerProvider> ();
 		powerProvider.sendReference (this);
 		startPoint = startingPoint.position;
-		endPoint = transform.position;
+		if (endingPoint != null) {
+			endPoint = endingPoint.position;
+		} else {
+			endPoint = transform.position;
+		}
 		if (LerpCoroutine.currentInstance == null)
 		{
 			LerpCoroutine lerpCoroutine = gameObject.AddComponent<LerpCoroutine>();
@@ -46,7 +52,7 @@ public class MoveWhenPowered : MonoBehaviour, Powerable {
 		if (coroutine != null) {
 			LerpCoroutine.stopCoroutine (coroutine);
 		}
-		coroutine = LerpCoroutine.LerpMinToMax(speed,currentPoint,powerArgs[1],currentPoint,changePosition,false);
+		coroutine = LerpCoroutine.LerpMinToMax(amountOfTime/speed,currentPoint,powerArgs[1],currentPoint,changePosition,false);
 
 	}
 
@@ -54,5 +60,9 @@ public class MoveWhenPowered : MonoBehaviour, Powerable {
 		currentPoint = positionFloat;
 		Vector3 position = Vector3.Lerp (startPoint, endPoint, positionFloat);
 		gameObject.transform.position = position;
+	}
+
+	public GameObject getGameObject() {
+		return gameObject;
 	}
 }

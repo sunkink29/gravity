@@ -138,7 +138,7 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 		mat.SetFloat ("_Distance", distance);
 		DynamicGI.UpdateMaterials (objectRenderer);
 		currentPoint = distance;
-		if (distance / Vector3.Distance (startPoint.position, endPoint.position) == 1) {
+		if (distance / Vector3.Distance (startPoint.position, endPoint.position) == 1 && connectedObject != null) {
 			currentPowerArgs [0] = GetInstanceID ();
 			connectedObject.changePower (currentPowerArgs);
 		}
@@ -157,5 +157,9 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
             powerOn();
         }
     }
+
+	public GameObject getGameObject() {
+		return gameObject;
+	}
 
 }

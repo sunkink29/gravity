@@ -200,6 +200,10 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 		}
 		coroutineCurrentPoint = t;
 	}
+
+	public GameObject getGameObject() {
+		return gameObject;
+	}
 }
 
 [Serializable]

@@ -19,11 +19,11 @@ public class FirstPersonScript : MonoBehaviour
     public CubeSpringSettings cubeControllerSetting = new CubeSpringSettings();
 
     // A variable to keep track of whether an object is picked up or not
-    bool objectPickedUp = false;
+    public bool objectPickedUp = false;
 
     // the object the is currently picked up or the last object that was picked up
-    GameObject liftObject;
-    CubeController liftObjectScript;
+    public GameObject liftObject;
+    public CubeController liftObjectScript;
 
     // the script for the script that controls the gravity for the player
     [SerializeField]
@@ -94,10 +94,10 @@ public class FirstPersonScript : MonoBehaviour
         }
 
         // call or set anything that needs to be done while holding an object
-        if (objectPickedUp)
-        {
-            liftObject.transform.rotation = transform.rotation;
-        }
+//        if (objectPickedUp)
+//        {
+//            liftObject.transform.rotation = transform.rotation;
+//        }
 
         // set the cursor lockstate to locked if it is not locked
         if (!(Cursor.lockState == CursorLockMode.Locked))
@@ -124,20 +124,7 @@ public class FirstPersonScript : MonoBehaviour
         {
             toggleNoClip();
         }
-
-        // check if the player has pressed a button to interact
-        //		if (Input.GetButtonDown ("Interact")) {
-        //			if (!objectPickedUp) {
-        //
-        //				// if an object is not pick up call the fuction to pick it up
-        //				liftObjects ();
-        //			} else {
-        //
-        //				// if an object is picked up call the fuction to drop it
-        //				dropObject ();
-        //			}
-        //		}
-
+			
         if (noClipEnabled && Input.GetMouseButtonDown(0))
         {
             RaycastHit hitInfo;
@@ -202,33 +189,29 @@ public class FirstPersonScript : MonoBehaviour
 			Color color = new Color (1, 1, 1, 0.4f);
 			reticle.GetComponent<Image> ().color = color;
 		}
+		if (Input.GetButtonDown ("Interact")) {
+			if (objectPickedUp) {
+				liftObjectScript.interact ();
+			} else if (hit) {
 
-        if (hit && Input.GetButtonDown("Interact"))
-        {
+				interactScript = raycastHit.transform.gameObject.GetComponent<Interactible> ();
+				Vector3 objectRotation;
 
-            interactScript = raycastHit.transform.gameObject.GetComponent<Interactible>();
-            Vector3 objectRotation;
+				if (hit && raycastHit.transform.gameObject.tag == "liftable") {
+					if (!objectPickedUp) {
 
-            if (hit && raycastHit.transform.gameObject.tag == "liftable")
-            {
-                if (!objectPickedUp)
-                {
+						// if an object is not pick up call the fuction to pick it up
+						liftObjects ();
+					} else {
 
-                    // if an object is not pick up call the fuction to pick it up
-                    liftObjects();
-                }
-                else
-                {
-
-                    // if an object is picked up call the fuction to drop it
-                    dropObject();
-                }
-            }
-            else if (interactScript != null)
-            {
-                interactScript.interact();
-            }
-        }
+						// if an object is picked up call the fuction to drop it
+						dropObject ();
+					}
+				} else if (interactScript != null) {
+					interactScript.interact ();
+				}
+			}
+		}
         
         if (cheatsEnabled && hit && Input.GetMouseButtonDown(4))
         {

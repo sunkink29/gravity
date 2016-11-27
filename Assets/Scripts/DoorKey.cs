@@ -170,4 +170,8 @@ public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
 		powerable = reference;
 		//print(reference);
 	}
+
+	public GameObject getGameObject (){
+		return gameObject;
+	}
 }

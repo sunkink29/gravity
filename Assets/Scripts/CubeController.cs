@@ -10,22 +10,26 @@ public class CubeController : MonoBehaviour , Interactible {
 	[HideInInspector]public Rigidbody objectRigidbody;
 	CubeSpringSettings cubeControllerSettings;
 	SpringJoint springJoint;
-	bool objectPickedUp = false;
+	public bool objectPickedUp = false;
 	FirstPersonScript playerScript;
 	Transform playerCamera;
+	Collider boxCollider;
+	public bool interactible = true;
 
 	// Use this for initialization
 	void Start () {
-		gravityDirection = Vector3.up;
+		//gravityDirection = Vector3.up;
 		if (GetComponent<Rigidbody> () == null) {
 			objectRigidbody = gameObject.AddComponent<Rigidbody> ();
 		} else {
 			objectRigidbody = GetComponent<Rigidbody> ();
 		}
-		gameObject.tag = "liftable";
+		boxCollider = GetComponent<Collider> ();
+//		gameObject.tag = "liftable";
 //		objectRigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-//		objectRigidbody.useGravity = false;
+		objectRigidbody.useGravity = false;
 		objectRigidbody.mass = cubeMass;
+
 	}
 
 	void FixedUpdate () {
@@ -36,9 +40,9 @@ public class CubeController : MonoBehaviour , Interactible {
 	
 	// Update is called once per frame
 	void Update () {
-		if ((objectRigidbody.velocity.x + 	objectRigidbody.velocity.y + objectRigidbody.velocity.z / 3) == 30) {
-			objectRigidbody.velocity = new Vector3 (0, 0, 0);
-		}
+//		if ((objectRigidbody.velocity.x + 	objectRigidbody.velocity.y + objectRigidbody.velocity.z / 3) == 30) {
+//			objectRigidbody.velocity = new Vector3 (0, 0, 0);
+//		}
 		if (objectPickedUp) {
 			if (objectRigidbody.isKinematic == true) {
 				objectRigidbody.isKinematic = false;
@@ -64,29 +68,39 @@ public class CubeController : MonoBehaviour , Interactible {
 			if (objectRigidbody.angularDrag != cubeControllerSettings.rigidbodyAnglarDrag) {
 				objectRigidbody.angularDrag = cubeControllerSettings.rigidbodyAnglarDrag;
 			}
+			transform.rotation = playerScript.transform.rotation;
 		}
 	}
 
 	void gravity () {
 		RaycastHit hitInfo;
-		Physics.Raycast (transform.position, gravityDirection * -1, out hitInfo);
-//		if (hitInfo.distance <= .1f + .5f) {
-//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+		bool hit = Physics.Raycast (transform.position, gravityDirection, out hitInfo);
+		if (objectRigidbody.velocity == Vector3.zero) {
+			objectRigidbody.isKinematic = true;
+		}
+		if (hitInfo.distance <= 0.1 + 0.5 && hit && !objectRigidbody.isKinematic) {
+			objectRigidbody.position += (hitInfo.distance - 0.5f) * gravityDirection;
+			objectRigidbody.isKinematic = true;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (0.5f, 0, 0.5f), gravityDirection, out hitInfo, .1f + .5f)&& !objectRigidbody.isKinematic) {
+//			objectRigidbody.position += (hitInfo.distance - 0.5f) * gravityDirection;
 //			objectRigidbody.isKinematic = true;
-//		} else if (Physics.Raycast (transform.positi on + new Vector3 (1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (-0.5f, 0, -0.5f), gravityDirection, out hitInfo, .1f + .5f)&& !objectRigidbody.isKinematic) {
+//			objectRigidbody.position += (hitInfo.distance - 0.5f) * gravityDirection;
 //			objectRigidbody.isKinematic = true;
-//		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (0.5f, 0, -0.5f), gravityDirection, out hitInfo, .1f + .5f)&& !objectRigidbody.isKinematic) {
+//			objectRigidbody.position += (hitInfo.distance - 0.5f) * gravityDirection;
 //			objectRigidbody.isKinematic = true;
-//		} else if (Physics.Raycast (transform.position + new Vector3 (1, 0, -1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
+//		} else if (Physics.Raycast (transform.position + new Vector3 (-0.5f, 0, 0.5f), gravityDirection, out hitInfo, .1f + .5f) && !objectRigidbody.isKinematic) {
+//			objectRigidbody.position += (hitInfo.distance - 0.5f) * gravityDirection;
 //			objectRigidbody.isKinematic = true;
-//		} else if (Physics.Raycast (transform.position + new Vector3 (-1, 0, 1), gravityDirection * -1, out hitInfo, .1f + .5f)) {
-//			transform.position += (hitInfo.distance - 0.5f) * gravityDirection * -1;
-//			objectRigidbody.isKinematic = true;
-//		}
-		objectRigidbody.AddForce ( gravityStrenth * gravityDirection * -1 * Time.fixedTime,ForceMode.Acceleration);
+		} else if (hitInfo.distance > 0.1 + 0.5) {
+			objectRigidbody.isKinematic = false;
+			objectRigidbody.velocity = Vector3.zero;
+			transform.eulerAngles = hitInfo.normal;
+		}
+		objectRigidbody.velocity += gravityStrenth * gravityDirection * Time.fixedDeltaTime;
+//		print (objectRigidbody.isKinematic + gameObject.name);
+//		objectRigidbody.AddForce (gravityStrenth * gravityDirection * Time.fixedDeltaTime);
 	}
 
 	public void pickUpObject (FirstPersonScript player) {
@@ -112,7 +126,10 @@ public class CubeController : MonoBehaviour , Interactible {
 		}
 
 		objectPickedUp = true;
+		useGravity = false;
 		gameObject.layer = 9;
+		player.objectPickedUp = true;
+		player.liftObjectScript = this;
 	}
 
 	public void dropObject () {
@@ -120,13 +137,18 @@ public class CubeController : MonoBehaviour , Interactible {
 		Destroy (springJoint);
 		objectRigidbody.isKinematic = false;
 		gameObject.layer = 1;
+		useGravity = true;
+		playerScript.objectPickedUp = false;
 	}
 
 	public void interact() {
-		if (!objectPickedUp) {
-			pickUpObject (FirstPersonScript.player);
-		} else {
-			dropObject ();
+		if (interactible) {
+			if (!objectPickedUp) {
+				pickUpObject (FirstPersonScript.player);
+			} else {
+				dropObject ();
+			}
 		}
 	}
+
 }

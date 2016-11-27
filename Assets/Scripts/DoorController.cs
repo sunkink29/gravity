@@ -34,11 +34,19 @@ public class DoorController : MonoBehaviour , Powerable {
 	}
 
 	public virtual void OnTriggerEnter (Collider collider) {
-		animateDoor (true);
+		if (collider.gameObject.GetComponent<CubeController> () == null) {
+			animateDoor (true);
+		} else {
+			animator.SetBool ("DoorAcessDenied", true);
+		}
 	}
 
 	public virtual void OnTriggerExit (Collider collider) {
-		animateDoor (false);
+		if (collider.gameObject.GetComponent<CubeController> () == null) {
+			animateDoor (false);
+		} else {
+			animator.SetBool ("DoorAcessDenied", false);
+		}
 	}
 
 	public void powerOn () {
@@ -72,5 +80,9 @@ public class DoorController : MonoBehaviour , Powerable {
 		animator.SetBool ("DoorClosed", !state);
 		doorOpened = state;
 		open = state;
+	}
+
+	public GameObject getGameObject(){
+		return gameObject;
 	}
 }
