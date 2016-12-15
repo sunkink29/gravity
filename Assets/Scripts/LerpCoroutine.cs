@@ -4,6 +4,7 @@ using System.Collections;
 public class LerpCoroutine : MonoBehaviour {
     public delegate void floatDel(float currentPointFloat);
     public delegate void colorDel(Color currentPoint);
+	static float lengthOfWait = .2f;
     
     public static LerpCoroutine currentInstance;
 
@@ -77,7 +78,7 @@ public class LerpCoroutine : MonoBehaviour {
         {
             float currentPoint = Mathf.Lerp(start, end, i / lengthInSec);
             callback(currentPoint);
-            yield return null;
+			yield return null;
         }
         callback(end);
     }

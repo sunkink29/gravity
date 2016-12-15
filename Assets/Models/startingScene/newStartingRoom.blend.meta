@@ -6,10 +6,46 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: base_Mesh
+    100004: Cube
+    100006: ship_Control_Room
+    100008: ship_Control_Room_hallway
+    100010: start_hallway
+    100012: start_hallway_intersection
+    100014: start_Room
+    100016: work_in_progress
     400000: //RootNode
+    400002: base_Mesh
+    400004: Cube
+    400006: ship_Control_Room
+    400008: ship_Control_Room_hallway
+    400010: start_hallway
+    400012: start_hallway_intersection
+    400014: start_Room
+    400016: work_in_progress
     2300000: //RootNode
+    2300002: Cube
+    2300004: ship_Control_Room
+    2300006: ship_Control_Room_hallway
+    2300008: start_hallway
+    2300010: start_hallway_intersection
+    2300012: start_Room
+    2300014: work_in_progress
     3300000: //RootNode
+    3300002: Cube
+    3300004: ship_Control_Room
+    3300006: ship_Control_Room_hallway
+    3300008: start_hallway
+    3300010: start_hallway_intersection
+    3300012: start_Room
+    3300014: work_in_progress
     4300000: Cube
+    4300002: ship_Control_Room_hallway
+    4300004: ship_Control_Room
+    4300006: start_hallway_intersection
+    4300008: start_hallway
+    4300010: start_Room
+    4300012: work_in_progress
     7400000: Default Take
     9500000: //RootNode
   materials:
@@ -19,7 +55,7 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 

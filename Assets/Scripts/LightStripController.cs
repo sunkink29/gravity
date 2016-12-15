@@ -17,6 +17,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     public bool useCustomColor = false;
     public Color color = Color.white;
     public float maxIntensity = 1;
+	public bool changeIntensityToPower = false;
     System.Random randomGen = new System.Random();
     public bool powered = false;
     public bool UpdateGI = false;
@@ -154,6 +155,9 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
 			powered = true;
 			color = Color.white;
 			intensity = maxIntensity;
+		} else if (changeIntensityToPower && powerArgs.Length >= 2) {
+			intensity = powerArgs [1];
+			color = this.color;
 		} else {
 			powered = false;
 			color = this.color;
@@ -187,6 +191,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     {
         Color emissionColor = color * intensity; // Mathf.LinearToGammaSpace(intensity);
         emission.material.SetColor("_EmissionColor", emissionColor);
+//		DynamicGI.UpdateMaterials (emission);
         DynamicGI.SetEmissive(emission,emissionColor);
         //print(intensity);
         if (lightType == LightType.pointLight)
