@@ -57,7 +57,7 @@ public class LockedDoorController : DoorController {
 		}
 	}
 
-	public override void powerOn(PowerProvider reference) {
+	public void powerOn(PowerProvider reference) {
 		for (int i = 0; i < doorLocks.Length; i++) {
 			if (doorLocks [i].reference == reference) {
 				changeLockPowerState (i, true);
@@ -66,7 +66,7 @@ public class LockedDoorController : DoorController {
 		}
 	}
 
-	public override void powerOff(PowerProvider reference) {
+	public void powerOff(PowerProvider reference) {
 		for (int i = 0; i < doorLocks.Length; i++) {
 			if (doorLocks [i].reference == reference) {
 				changeLockPowerState (i, false);

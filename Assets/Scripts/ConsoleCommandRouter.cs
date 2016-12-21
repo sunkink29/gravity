@@ -74,10 +74,10 @@ public class ConsoleCommandRouter : MonoBehaviour {
 			room = RoomLightsController.AllRooms [i];
 			if (room.roomName.ToLower() == (args [0].ToLower())) {
 				if (args[1].ToLower().Contains("on")) {
-					room.powerOn ();
+					room.changePower (new float[]{ GetInstanceID (), 1 });
 					return room.roomName + " room turned on";
 				} else if (args[1].ToLower().Contains("off")) {
-					room.powerOff ();
+					room.changePower (new float[]{ GetInstanceID (), 0 });
 					return room.roomName + " room turned off";
 				}
 				return "specify whether to turn the room Off or On";

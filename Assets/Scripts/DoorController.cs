@@ -4,7 +4,7 @@ using System.Collections;
 public class DoorController : MonoBehaviour , Powerable {
 
 	Animator animator;
-	public GameObject powerProviderGameObject;
+	public MonoBehaviour powerProviderMonoBehaviour;
 	PowerProvider powerProvider;
 	bool open;
 	[SerializeField] bool doorOpened = false;
@@ -13,8 +13,8 @@ public class DoorController : MonoBehaviour , Powerable {
 	public virtual void Start () {
 		animator = GetComponent<Animator> ();
 		animator.SetBool ("DoorUnlocked",true);
-		if (powerProviderGameObject != null) {
-			powerProvider = powerProviderGameObject.GetComponent<PowerProvider> ();
+		if (powerProviderMonoBehaviour != null) {
+			powerProvider =  (PowerProvider) powerProviderMonoBehaviour;
 			if (powerProvider != null) {
 				powerProvider.sendReference (this);
 				animator.SetBool ("DoorUnlocked",false);
@@ -47,22 +47,6 @@ public class DoorController : MonoBehaviour , Powerable {
 		} else {
 			animator.SetBool ("DoorAcessDenied", false);
 		}
-	}
-
-	public void powerOn () {
-		animator.SetBool ("DoorUnlocked",true);
-	}
-
-	public virtual void powerOn (PowerProvider reference) {
-		animator.SetBool ("DoorUnlocked",true);
-	}
-
-	public void powerOff () {
-		animator.SetBool ("DoorUnlocked",false);
-	}
-
-	public virtual void powerOff (PowerProvider reference) {
-		animator.SetBool ("DoorUnlocked",false);
 	}
 
 	public virtual void changePower(float[] powerArgs) {

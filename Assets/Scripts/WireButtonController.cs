@@ -5,7 +5,7 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 
 	Collider currentCollider;
 	[SerializeField] bool isPowered;
-	public GameObject powerProviderObject;
+	public MonoBehaviour powerProviderMonoBehaviour;
 	public Renderer objectRenderer;
 	public Transform startPoint;
 	public Transform endPoint;
@@ -34,7 +34,7 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 //		if (Application.isEditor) {
 //			StartCoroutine (checkIfPowered ());
 //		}
-		powerProvider = powerProviderObject.GetComponent<PowerProvider> ();
+		powerProvider = (PowerProvider) powerProviderMonoBehaviour;
 		powerProvider.sendReference (this);
 		Material[] materials = objectRenderer.materials;
 		if (materials.Length >= 2) {
@@ -50,22 +50,22 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 
 	void OnTriggerEnter (Collider collider) {
 		if (collider.gameObject.GetComponent<CubeController> () != null) {
-			powerOn ();
+			changePower (new float[]{ GetInstanceID (), 1 });
 		}
 	}
 
 	void OnTriggerExit (Collider collider) {
 		if (collider.gameObject.GetComponent<CubeController> () != null) {
-			powerOff ();
+			changePower (new float[]{ GetInstanceID (), 0 });
 		}
 	}
 
 	IEnumerator checkIfPowered () {
 		while (Application.isPlaying) {
 			if (fadeEmission.emission == 0 && isPowered) {
-				powerOn ();
+				changePower (new float[]{ GetInstanceID (), 1 });
 			} else if (fadeEmission.emission == 1 && !isPowered) {
-				powerOff ();
+				changePower (new float[]{ GetInstanceID (), 0 });
 			}
 			yield return new WaitForSeconds (1);
 		}
@@ -79,36 +79,6 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
 			connectedObject.changePower (new float[]{ this.GetInstanceID (), 1 });
 		}
     }
-
-	public void powerOn () {
-		powerOn (null);
-	}
-
-	public void powerOn (PowerProvider reference){
-		if (!isPowered) {
-			isPowered = true;
-			LerpCoroutine.LerpMinToMax(Vector3.Distance(startPoint.position,endPoint.position)*speed,0,
-				Vector3.Distance(startPoint.position,endPoint.position),currentPoint,changeWireDistance,false);
-			//fadeEmission.turnOn ();
-			//coroutine = StartCoroutine(waitForFullEmission());
-		}
-	}
-
-	public void powerOff () {
-		powerOff (null);
-	}
-
-	public void powerOff (PowerProvider reference){
-		if (isPowered) {
-			StopCoroutine (coroutine);
-			isPowered = false;
-			changeWireDistance (0);
-//			fadeEmission.turnOff ();
-//			if (connectedObject != null) {
-//				connectedObject.powerOff (this);
-//			}
-		}
-	}
 
 	public void changePower(float[] powerArgs) {
 		currentPowerArgs = powerArgs;
@@ -151,10 +121,10 @@ public class WireButtonController : MonoBehaviour , Powerable, PowerProvider, De
     public void debug() {
         if (isPowered)
         {
-            powerOff();
+			changePower (new float[]{ GetInstanceID (), 0 });
         } else
         {
-            powerOn();
+			changePower (new float[]{ GetInstanceID (), 1 });
         }
     }
 

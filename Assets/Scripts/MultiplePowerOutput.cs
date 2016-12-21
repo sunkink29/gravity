@@ -15,22 +15,6 @@ public class MultiplePowerOutput : MonoBehaviour , Powerable, PowerProvider {
 		powerProvider.sendReference (this);
 	}
 
-	public void powerOn() {
-		powerOn (null);
-	}
-
-	public void powerOn(PowerProvider provider) {
-		changePower(new float[]{GetInstanceID(),1});
-	}
-
-	public void powerOff() {
-		powerOff (null);
-	}
-
-	public void powerOff(PowerProvider provider) {
-		changePower(new float[]{GetInstanceID(),1});
-	}
-
 	public void changePower(float[] powerArgs) {
 		powerArgs [0] = GetInstanceID ();
 		for (int i = 0; i < powerables.Count; i++) {

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
 
-    public GameObject[] references;
+	public MonoBehaviour[] references;
     LockedDoorPart[] doorLocks;
 	int[] doorLocksRefsIDs;
     LockedDoorController door;
@@ -20,8 +20,8 @@ public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
             {
                 doorLocks = GetComponentsInChildren<LockedDoorPart>();
                 doorLocks[i].UseLockPart(door);
-                doorLocks[i].reference = references[i].GetComponent<PowerProvider>();
-				MonoBehaviour reference = (MonoBehaviour) doorLocks [i].reference;
+				doorLocks[i].reference = (PowerProvider) references[i];
+				MonoBehaviour reference = references[i];
 				if (reference != null) {
 					doorLocksRefsIDs [i] = reference.GetInstanceID ();
 				} else {
@@ -50,51 +50,6 @@ public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
 //            }
 //        }
 //	}
-
-    public void powerOn () {
-        powerOn(null);
-    }
-
-    public void powerOn(PowerProvider reference) {
-        if (reference != null)
-        {
-			float numOn = 0;
-            for (int i = 0; i < doorLocks.Length; i++)
-            {
-                if (doorLocks[i].reference == reference)
-                {
-                    changeLockPowerState(i, true);
-                }
-				if (doorLocks [i].isPowered) {
-					numOn++;
-				}
-            }
-			if (roomLights != null) {
-				roomLights.powerOn (numOn / doorLocks.Length);
-			}        
-		}
-    } 
-
-    public void powerOff () {
-		powerOff (null);
-    }
-
-    public void powerOff(PowerProvider reference) {
-		if (reference != null) {
-			int numOn = 0;
-			for (int i = 0; i < doorLocks.Length; i++) {
-				if (doorLocks [i].reference == reference) {
-					changeLockPowerState (i, false);
-				}
-				if (doorLocks [i].isPowered) {
-					numOn++;
-				}
-			}
-			if (roomLights != null) {
-				roomLights.powerOff (numOn / doorLocks.Length);
-			}
-		}
-    }
 
 	public void changePower(float[] powerArgs) {
 		if (powerArgs.Length >= 2 && powerArgs [1] != -1) {
@@ -151,12 +106,12 @@ public class DoorKey : MonoBehaviour, Powerable, PowerProvider {
 		if (locksPowered == doorLocks.Length && !unlocked) {
 			unlocked = true;
 			if (powerable != null) {
-				powerable.powerOn ();
+				powerable.changePower (new float[]{ GetInstanceID (), 1 });
 			}
 		} else if (locksPowered != doorLocks.Length && unlocked){
 			unlocked = false;
 			if (powerable != null) {
-				powerable.powerOff ();
+				powerable.changePower (new float[]{ GetInstanceID (), 0 });
 			}
 		}
     }

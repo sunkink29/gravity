@@ -3,12 +3,6 @@ using System.Collections;
 
 public interface Powerable {
 
-	void powerOn ();
-	void powerOn (PowerProvider reference);
-
-	void powerOff ();
-	void powerOff (PowerProvider reference);
-
 	void changePower (float[] powerArgs);
 	GameObject getGameObject();
 }

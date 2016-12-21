@@ -6,7 +6,7 @@ using System.Collections;
 public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
 
     Powerable ConnectedObject;
-	public GameObject powerProviderObject;
+	public MonoBehaviour powerProviderMonoBehaviour;
 	PowerProvider powerProvider;
     LightStripController[] lightStripObjects;
     [SerializeField]
@@ -61,9 +61,9 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
             lerpCoroutine.Awake();
         }
 
-        if (powerProviderObject != null)
+        if (powerProviderMonoBehaviour != null)
         {
-            powerProvider = powerProviderObject.GetComponent<PowerProvider>();
+			powerProvider = (PowerProvider) powerProviderMonoBehaviour;
             powerProvider.sendReference(this);
         }
 	}
@@ -89,83 +89,7 @@ public class RoomLightsController : MonoBehaviour, Powerable, PowerProvider {
             lightGroups[index].turnOff();
         }
     }
-
-	public void powerOn () {
-		powerOn (null);
-	}
-
-	public void powerOn (PowerProvider reference) {
-        //fadeEmission.turnOn ();
-        //ConnectedObject.powerOn (this);
-
-        powered = true;
-//        for (int i = 0; i < lightGroups.Length; i++)
-//        {
-//            changeLightState(i, true);
-//        }
-
-		if (currentCoroutine != null) {
-			LerpCoroutine.stopCoroutine (currentCoroutine);
-		}
-		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,false);
-
-        if (ConnectedObject != null)
-        {
-        ConnectedObject.powerOn(this);
-        }
-
-	}
-
-	public void powerOn (float num) {
-		if (currentCoroutine != null) {
-			LerpCoroutine.stopCoroutine (currentCoroutine);
-		}
-		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,false);
-		if (num == 1) {
-			powered = true;
-			if (ConnectedObject != null) {
-				ConnectedObject.powerOn (this);
-			}
-		}
-	}
-
-	public void powerOff () {
-		powerOff (null);
-	}
-
-	public void powerOff (PowerProvider reference) {
-        //fadeEmission.turnOff ();
-        //ConnectedObject.powerOff (this);
-
-        powered = false;
-//        for (int i = 0; i < lightGroups.Length; i++)
-//        {
-//            changeLightState(i, false);
-//        }
-
-		if (currentCoroutine != null) {
-			LerpCoroutine.stopCoroutine (currentCoroutine);
-		}
-		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,1,coroutineCurrentPoint,changeAllLights,true);
-
-        if (ConnectedObject != null)
-        {
-        ConnectedObject.powerOff(this);
-        }
-    }
-	//ToDo: use an array of ints to power things on, where the first int is a hash for the object it comes from and the second int for the strength of the signal
-	public void powerOff (float num) {
-		if (currentCoroutine != null) {
-			LerpCoroutine.stopCoroutine (currentCoroutine);
-		}
-		currentCoroutine = LerpCoroutine.LerpMinToMax(animationLength,0,num,coroutineCurrentPoint,changeAllLights,true);
-
-		powered = false;
-		if (ConnectedObject != null) {
-			ConnectedObject.powerOff (this);
-		}
-	}
-	
+		
 	public void changePower(float[] powerArgs) {
 		bool powered;
 		float num = powerArgs [1];

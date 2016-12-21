@@ -14,6 +14,7 @@ ModelImporter:
     100012: start_hallway_intersection
     100014: start_Room
     100016: work_in_progress
+    100018: ship_air_lock
     400000: //RootNode
     400002: base_Mesh
     400004: Cube
@@ -23,6 +24,7 @@ ModelImporter:
     400012: start_hallway_intersection
     400014: start_Room
     400016: work_in_progress
+    400018: ship_air_lock
     2300000: //RootNode
     2300002: Cube
     2300004: ship_Control_Room
@@ -31,6 +33,7 @@ ModelImporter:
     2300010: start_hallway_intersection
     2300012: start_Room
     2300014: work_in_progress
+    2300016: ship_air_lock
     3300000: //RootNode
     3300002: Cube
     3300004: ship_Control_Room
@@ -39,6 +42,7 @@ ModelImporter:
     3300010: start_hallway_intersection
     3300012: start_Room
     3300014: work_in_progress
+    3300016: ship_air_lock
     4300000: Cube
     4300002: ship_Control_Room_hallway
     4300004: ship_Control_Room
@@ -46,6 +50,7 @@ ModelImporter:
     4300008: start_hallway
     4300010: start_Room
     4300012: work_in_progress
+    4300014: ship_air_lock
     7400000: Default Take
     9500000: //RootNode
   materials:

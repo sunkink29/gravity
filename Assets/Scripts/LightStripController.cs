@@ -25,7 +25,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     [Range(0, 1)]
     public float colorSlider = 0;
     Powerable connectedObject;
-    public GameObject powerProviderObject;
+	public MonoBehaviour powerProviderMonoBehaviour;
     PowerProvider powerProvider;
 
     void Awake()
@@ -55,9 +55,9 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
             pointLight.enabled = true;
             pointLight.gameObject.SetActive(true);
         }
-        if (powerProviderObject != null)
+        if (powerProviderMonoBehaviour != null)
         {
-            powerProvider = powerProviderObject.GetComponent<PowerProvider>();
+            powerProvider = powerProviderMonoBehaviour.GetComponent<PowerProvider>();
             powerProvider.sendReference(this);
         }
        
@@ -94,6 +94,7 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
 
 	// Use this for initialization
 	void Start () {
+		
         setColorAndIntensity(color, defaltIntensity);
     }
 
@@ -104,47 +105,16 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
             UpdateGI = false;
             if (powered)
             {
-                powerOn();
+				changePower (new float[]{ GetInstanceID(), 1 });
             } else
             {
-                powerOff();
+				changePower (new float[]{ GetInstanceID(), 0 });
             }
         }
 
         if (useSlider)
         {
             setColorAndIntensity(Color.Lerp(color, Color.white, colorSlider),defaltIntensity);
-        }
-    }
-
-    public void powerOn()
-    {
-        powerOn(null);
-    }
-
-    public void powerOn(PowerProvider powerProvider)
-    {
-
-        powered = true;
-        setColorAndIntensity(Color.white, maxIntensity);
-        if (connectedObject != null)
-        {
-        connectedObject.powerOn(this);
-        }
-    }  
-
-    public void powerOff()
-    {
-        powerOff(null);
-    }
-
-    public void powerOff(PowerProvider powerProvider)
-    {
-        powered = false;
-        setColorAndIntensity(color, defaltIntensity);
-        if (connectedObject != null)
-        {
-        connectedObject.powerOff(this);
         }
     }
 
@@ -179,11 +149,11 @@ public class LightStripController : MonoBehaviour, Powerable, PowerProvider, Deb
     {
         if (powered)
         {
-            powerOff();
+			changePower (new float[]{ GetInstanceID (), 0 });
         }
         else
         {
-            powerOn();
+			changePower (new float[]{ GetInstanceID (), 1 });
         }
     }
 
