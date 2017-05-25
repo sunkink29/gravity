@@ -22,6 +22,8 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 	bool resetPointInRotation = false;
 	public bool enableGravity = true;
 	CapsuleCollider playerCollider;
+	public float angleDistance = 0;
+	 bool rotatePlayer = false;
 
 	// Use this for initialization
 	public void Awake () {
@@ -38,12 +40,13 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 		if (!disableAutoRotate) {
 			rayCastGround ();
 		}
+		rotate ();
 	}
 
 	// Update is called once per frame
 	public void Update () 
 	{
-		rotate ();
+		
 
 	}
 
@@ -56,19 +59,20 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 	void rotate (){
 		if (attachedPlayer.transform.up != currentDirection) {
 			Quaternion targetQuaternion = Quaternion.FromToRotation ( attachedPlayer.transform.up, currentDirection) * attachedPlayer.transform.rotation;
-			if (resetPointInRotation)
+			if (resetPointInRotation) {
 				pointInRotation = 0;
-		
-			resetPointInRotation = false;
+				angleDistance = Vector3.Angle( attachedPlayer.transform.up, currentDirection);
+				resetPointInRotation = false;
+			}
 
 			if (disableXRotation)
 				targetQuaternion.eulerAngles = new Vector3 (lastRotation.x, lastRotation.y, targetQuaternion.eulerAngles.z);
 		
-			if (pointInRotation + angleSpeed * Time.deltaTime <= 1) {
+			if (pointInRotation + angleSpeed * Time.deltaTime <= angleDistance) {
 				pointInRotation += angleSpeed * Time.deltaTime;
 
-			} else if (pointInRotation + angleSpeed * Time.deltaTime >= 1) {
-				pointInRotation = 1;
+			} else if (pointInRotation + angleSpeed * Time.deltaTime >= angleDistance) {
+				pointInRotation = angleDistance;
 			}
 
 			attachedPlayer.transform.rotation = Quaternion.Slerp (lastrotation, targetQuaternion, pointInRotation);
@@ -79,6 +83,12 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 			playerRigidbody.AddForce (-currentDirection * gravity, ForceMode.Impulse);
 	}
 
+	public void turnToVector(Vector3 rotation) {
+		rotatePlayer = true;
+		currentDirection = rotation;
+		resetPointInRotation = true;
+	}
+
 	public void rayCastGround() {
 		RaycastHit hitInfo;
 		bool hit = Physics.Raycast (attachedPlayer.transform.position, attachedPlayer.transform.up * -1, out hitInfo);
@@ -87,17 +97,23 @@ public class GravityOnNormals /*: MonoBehaviour*/ {
 		if (hit) {
 			if (hitInfo.distance < playerCollider.height / 2 + playerCollider.radius + 0.5f || currentDirection == new Vector3()) {
 				lasthitDirection = currentDirection;
-				currentDirection = hitInfo.normal;
+				if (!hitInfo.normal.Equals(Vector3.zero)) {
+					currentDirection = hitInfo.normal;
+				}
 
 				if (lasthitDirection != currentDirection) {
 					attachedPlayer.rotatePlayer = false;
 					resetPointInRotation = true;
 					lastrotation = attachedPlayer.transform.localRotation;
 					Debug.DrawLine (raycastHit.point, raycastHit.point + raycastHit.normal, Color.green, 2, false);
+				} else {
+					rotatePlayer = false;
 				}
 			}
 		} else {
-			currentDirection = new Vector3 ();
+			if (!rotatePlayer) {
+				currentDirection = new Vector3 ();
+			}
 		}
 	}
 

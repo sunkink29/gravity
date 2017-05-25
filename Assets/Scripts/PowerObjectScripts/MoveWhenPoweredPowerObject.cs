@@ -14,7 +14,6 @@ public class MoveWhenPoweredPowerObject : PowerObject{
 
 	// Use this for initialization
 	public override void Start () {
-		powerType = PowerType.Powerable;
 		base.Start ();
 		startPoint = startingPoint.position;
 		if (endingPoint != null) {

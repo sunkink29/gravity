@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DoorKeyPowerObject : PowerObject
-{
+public class DoorKeyPowerObject : PowerProviderPowerObject, FindPropertys {
 
-    public PowerObject[] references;
+    public PowerProviderPowerObject[] references;
     LockedDoorPartPowerObject[] doorLocks;
     int[] doorLocksRefsIDs;
     LockedDoorController door;
-    Powerable powerable;
     public bool unlocked = false;
-    public RoomLightsController roomLights;
-    public GameObject roomLightGameObject;
+
+    string[] propertys = {"lockPowerState", "unlocked", "power"};
+    
     public override void Start()
     {
-        powerType = PowerType.both;
         doorLocks = new LockedDoorPartPowerObject[references.Length];
         doorLocksRefsIDs = new int[references.Length];
         doorLocks = GetComponentsInChildren<LockedDoorPartPowerObject>();
@@ -22,9 +20,9 @@ public class DoorKeyPowerObject : PowerObject
         {
             if (references[i] != null)
             {
-                doorLocks[i].UseLockPart(door);
+                doorLocks[i].UseLockPart();
                 doorLocks[i].reference = references[i];
-                PowerObject reference = references[i];
+                PowerProviderPowerObject reference = references[i];
                 if (reference != null)
                 {
                     doorLocksRefsIDs[i] = reference.GetInstanceID();
@@ -36,26 +34,7 @@ public class DoorKeyPowerObject : PowerObject
                 doorLocks[i].reference.sendReference(this);
             }
         }
-        if (roomLightGameObject != null)
-        {
-            roomLights = roomLightGameObject.GetComponent<RoomLightsController>();
-
-        }
     }
-
-    // Update is called once per frame
-    //	void Update () {
-    //        if (roomLights != null)
-    //        {
-    //            if (unlocked && !roomLights.powered)
-    //            {
-    //                roomLights.powerOn();
-    //            } else if (!unlocked && roomLights.powered)
-    //            {
-    //                roomLights.powerOff();
-    //            }
-    //        }
-    //	}
 
     public override void changePower(float[] powerArgs)
     {
@@ -82,13 +61,6 @@ public class DoorKeyPowerObject : PowerObject
                     numOn++;
                 }
             }
-            if (roomLights != null)
-            {
-                roomLights.changePower(new float[] { this.GetInstanceID(), (float)numOn / doorLocks.Length });
-            }
-            //			if (roomLights != null) {
-            //				roomLights.powerOff (numOn / doorLocks.Length);
-            //			}
         }
     }
 
@@ -122,35 +94,57 @@ public class DoorKeyPowerObject : PowerObject
         if (locksPowered == doorLocks.Length && !unlocked)
         {
             unlocked = true;
-            if (powerable != null)
-            {
-                powerable.changePower(new float[] { GetInstanceID(), 1 });
-            }
+            base.changePower(new float[] { GetInstanceID(), 1 });
         }
         else if (locksPowered != doorLocks.Length && unlocked)
         {
             unlocked = false;
-            if (powerable != null)
-            {
-                powerable.changePower(new float[] { GetInstanceID(), 0 });
-            }
+            base.changePower(new float[] { GetInstanceID(), 0 });
         }
     }
 
     public void sendReference(LockedDoorController reference)
     {
         door = reference;
-        //print(reference);
     }
 
-    public void sendReference(Powerable reference)
-    {
-        powerable = reference;
-        //print(reference);
+    public int findPropertyIndex(string property) {
+        for (int i = 0; i < propertys.Length; i++) {
+            if (propertys[i].Equals(property)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
-    public GameObject getGameObject()
-    {
-        return gameObject;
+	public bool hasProperty(string property) {
+        int propertyIndex = findPropertyIndex(property);
+        if (propertyIndex == -1) {
+            return false;
+        }
+        return true;
     }
+
+	public void changeProperty(string property, string[] propertyValue) {
+        int propertyIndex = findPropertyIndex(property);
+        switch (propertyIndex) {
+            case 0:
+                // changeLockPowerState(int.Parse(propertyValue[0],bool.Parse(propertyValue[1])));
+                break;
+			case 1:
+				for(int i = 0; i < doorLocks.Length; i++) {
+                    changeLockPowerState(i,bool.Parse(propertyValue[0]));
+                }
+				break;
+			case 2:
+				float[] propertyValueFloat = ConsoleCommandRouter.convertStringArrayToFloat(propertyValue);
+				changePower(propertyValueFloat);
+				break;
+        }
+	}
+
+	public string getName() {
+        return name;
+    }
+
 }

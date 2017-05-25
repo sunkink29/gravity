@@ -2,15 +2,14 @@
 using System.Collections;
 using System;
 
-public class LockedDoorPartPowerObject : MonoBehaviour, Debugable
+public class LockedDoorPartPowerObject : MonoBehaviour
 {
 
-    public PowerObject reference;
+    public PowerProviderPowerObject reference;
     bool powered;
     public bool isPowered;
     FadeEmission fadeEmission;
     Coroutine coroutine;
-    LockedDoorController doorController;
     [SerializeField]
     public FadeDoorPartEmissionPowerObject fadePartEmission = new FadeDoorPartEmissionPowerObject();
     public Renderer emission;
@@ -18,10 +17,16 @@ public class LockedDoorPartPowerObject : MonoBehaviour, Debugable
 
     void Awake()
     {
-        coroutine = StartCoroutine(WaitForDoor());
+        // coroutine = StartCoroutine(WaitForDoor());
+        if (LerpCoroutine.currentInstance == null)
+		{
+			LerpCoroutine lerpCoroutine = gameObject.AddComponent<LerpCoroutine>();
+			lerpCoroutine.Awake();
+		}
         fadePartEmission.doorPart = this;
         fadePartEmission.color = emission.material.GetColor("_EmissionColor");
         setColorAndIntensity(fadePartEmission.color, 0);
+        turnOn();
     }
 
     void Start()
@@ -84,19 +89,14 @@ public class LockedDoorPartPowerObject : MonoBehaviour, Debugable
         }
     }
 
-    public void UseLockPart(LockedDoorController door)
+    public void UseLockPart()
     {
-        doorController = door;
-        StopCoroutine(coroutine);
+        // StopCoroutine(coroutine);
+        turnOff();
         if (Application.isEditor)
         {
             StartCoroutine(CheckForVariableChange());
         }
-    }
-
-    public void debug()
-    {
-        doorController.toggleDoorLockState();
     }
 
     public void setColorAndIntensity(Color color, float intensity)

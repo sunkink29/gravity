@@ -21,3 +21,10 @@ public interface Debugable {
 
     void debug();
 }
+
+public interface FindPropertys {
+	
+	bool hasProperty(string property);
+	void changeProperty(string property, string[] propertyValue);
+	string getName();
+}

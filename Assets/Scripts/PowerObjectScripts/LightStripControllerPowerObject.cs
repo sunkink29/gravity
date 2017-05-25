@@ -5,25 +5,21 @@ using System.Collections.Generic;
 //public enum LightType { pointLight, emissiveLight };
 //public enum LightDefaltIntensity { fullStrenght, randomHighIntensity, randomLowIntensity, off }
 
-public class LightStripControllerPowerObject : PowerObject, Debugable {
+public class LightStripControllerPowerObject : PowerObject{
 
 	public LightType lightType = LightType.emissiveLight;
 	public LightDefaltIntensity lightDefaltIntensity = LightDefaltIntensity.randomHighIntensity;
 	public Light pointLight;
 	public Renderer emission;
 	public float defaltIntensity;
-	//Color defaltEmissionColor;
-	//Color maxEmissionColor;
 	public bool useCustomColor = false;
 	public Color color = Color.white;
+	Color minEmissionColor;
+	public Color maxEmissionColor = Color.white;
 	public float maxIntensity = 1;
 	public bool changeIntensityToPower = false;
 	System.Random randomGen = new System.Random();
 	public bool powered = false;
-	public bool UpdateGI = false;
-	public bool useSlider = false;
-	[Range(0, 1)]
-	public float colorSlider = 0;
 
 	void Awake()
 	{
@@ -54,60 +50,10 @@ public class LightStripControllerPowerObject : PowerObject, Debugable {
 		}
 	}
 
-	public void setup(LightColorSource colorSource)
-	{
-		LightColorSource[] colorChain = colorSource.colorSources;
-		List<LightColorSource> colorSources = new List<LightColorSource>();
-		for(int i = 0; i < colorChain.Length; i++)
-		{
-			colorSources.Add(colorChain[i]);
-		}
-		colorSources.Sort(isCloser);
-
-	}
-
-	public int isCloser(LightColorSource x, LightColorSource y)
-	{
-		float xDistance = Vector3.Distance(transform.position, x.transform.position);
-		float yDistance = Vector3.Distance(transform.position, y.transform.position);
-
-		if (xDistance < yDistance)
-		{
-			return -1;
-		} else if (xDistance == yDistance)
-		{
-			return 0;
-		} else
-		{
-			return 1;
-		}
-	}
-
 	// Use this for initialization
 	public override void Start () {
-		powerType = PowerType.Powerable;
 		base.Start ();
 		setColorAndIntensity(color, defaltIntensity);
-	}
-
-	void Update()
-	{
-		if (UpdateGI)
-		{
-			UpdateGI = false;
-			if (powered)
-			{
-				changePower (new float[]{ GetInstanceID(), 1 });
-			} else
-			{
-				changePower (new float[]{ GetInstanceID(), 0 });
-			}
-		}
-
-		if (useSlider)
-		{
-			setColorAndIntensity(Color.Lerp(color, Color.white, colorSlider),defaltIntensity);
-		}
 	}
 
 	public override void changePower(float[] powerArgs) {
@@ -115,7 +61,7 @@ public class LightStripControllerPowerObject : PowerObject, Debugable {
 		float intensity;
 		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
 			powered = true;
-			color = Color.white;
+			color = maxEmissionColor;
 			intensity = maxIntensity;
 		} else if (changeIntensityToPower && powerArgs.Length >= 2) {
 			intensity = powerArgs [1];
@@ -127,18 +73,6 @@ public class LightStripControllerPowerObject : PowerObject, Debugable {
 		}
 		setColorAndIntensity (color, intensity);
 		base.changePower (powerArgs);
-	}
-
-	public void debug()
-	{
-		if (powered)
-		{
-			changePower (new float[]{ GetInstanceID (), 0 });
-		}
-		else
-		{
-			changePower (new float[]{ GetInstanceID (), 1 });
-		}
 	}
 
 	public void setColorAndIntensity(Color color, float intensity)
@@ -162,10 +96,6 @@ public class LightStripControllerPowerObject : PowerObject, Debugable {
 		lightInfo.maxIntensity = maxIntensity;
 		lightInfo.color = color;
 		return lightInfo;
-	}
-
-	public GameObject getGameObject() {
-		return gameObject;
 	}
 }
 //

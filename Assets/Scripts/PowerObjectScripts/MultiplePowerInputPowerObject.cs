@@ -2,15 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class MultiplePowerInputPowerObject : PowerObject {
-	public PowerObject[] powerProviders;
+public class MultiplePowerInputPowerObject : PowerProviderPowerObject {
+	public PowerProviderPowerObject[] powerProviders;
 	public float[] powerProviderStates;
 	PowerObject powerable;
 	public bool sendPowerWhenFullyPowered;
 
 	// Use this for initialization
 	public override void Start () {
-		powerType = PowerType.both;
 		for (int i = 0; i < powerProviders.Length; i++) {
 			powerProviders[i].sendReference (this);
 		}
@@ -21,14 +20,14 @@ public class MultiplePowerInputPowerObject : PowerObject {
 	{
 		float sum = 0;
 		for (int i = 0; i < powerProviders.Length; i++) {
-			if (powerArgs.Length >= 1 && powerProviders[i].gameObject.GetInstanceID() == powerArgs[0]) {
+			if (powerArgs.Length >= 1 && powerProviders[i].GetInstanceID() == powerArgs[0]) {
 				if (powerArgs.Length >= 2 && powerArgs [1] <= 1) {
 					powerProviderStates [i] = powerArgs [1];
 				} else {
 					powerProviderStates [i] = 1;
 				}
+				print (powerProviders [i].GetInstanceID () + " " + powerArgs [0]);
 			}
-			print (powerProviders [i].GetInstanceID () + " " + powerArgs [0]);
 
 			sum += powerProviderStates [i];
 		}

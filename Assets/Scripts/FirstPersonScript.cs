@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityStandardAssets.CrossPlatformInput;
 using UnityEngine.UI;
+using System;
+using System.Collections.Generic;
 
-public class FirstPersonScript : MonoBehaviour
+public class FirstPersonScript : MonoBehaviour, FindPropertys
 {
 
      // the gameobject that holds the camera and any other object to rotate when the camera goes up or down
@@ -32,6 +33,8 @@ public class FirstPersonScript : MonoBehaviour
     // A light on the player to light up the area
     Light spotlight;
 
+    List<Action> fuctionCallWhenFloorCollisionChange = new List<Action>();
+    public bool isCollidingFloor = false;
     public bool rotatePlayer = true;
     public bool debug = false;
     public bool cheatsEnabled = false;
@@ -45,7 +48,11 @@ public class FirstPersonScript : MonoBehaviour
     public KeyCode noClipKey = KeyCode.Backslash;
     Collider playerCollider;
     public GameObject reticle;
-    
+    bool debugInteractEnabled = false;
+    DebugType debugType;
+    System.Object[] debugArgs;
+    string[] propertys = new string[] { "gravityStrength", "speed"};
+
     void Awake()
     {
 	    //Application.targetFrameRate = 20;
@@ -146,6 +153,35 @@ public class FirstPersonScript : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision collisionInfo) {
+        CapsuleCollider playerCollider = GetComponent<CapsuleCollider>();
+        if (Physics.Raycast (transform.position, transform.up * -1, playerCollider.height / 2 + playerCollider.radius + 0.5f)) {
+            if (!isCollidingFloor) {
+                for (int i = 0; i < fuctionCallWhenFloorCollisionChange.Count; i++) {
+                    fuctionCallWhenFloorCollisionChange[i](!isCollidingFloor);
+                }
+            }
+            isCollidingFloor = true;
+        }
+    }
+
+    void OnCollisionExit(Collision collisionInfo) {
+        CapsuleCollider playerCollider = GetComponent<CapsuleCollider>();
+        if (!Physics.Raycast (transform.position, transform.up * -1, playerCollider.height / 2 + playerCollider.radius + 0.5f)) {
+            isCollidingFloor = false;
+            for (int i = 0; i < fuctionCallWhenFloorCollisionChange.Count; i++) {
+                fuctionCallWhenFloorCollisionChange[i](isCollidingFloor);
+            }
+        }
+    }
+
+    public void CallWhenCollisionChange(Action action, bool addDelegete) {
+        if (addDelegete) {
+            fuctionCallWhenFloorCollisionChange.Add(action);
+        } else {
+            fuctionCallWhenFloorCollisionChange.Remove(action);
+        }
+    }
 
     // fuction to move
     void move()
@@ -213,16 +249,27 @@ public class FirstPersonScript : MonoBehaviour
 			}
 		}
         
-        if (cheatsEnabled && hit && Input.GetMouseButtonDown(4))
+        if (cheatsEnabled && hit && Input.GetKeyDown(KeyCode.F) && debugInteractEnabled)
         {
-            Debugable debugScript = raycastHit.transform.gameObject.GetComponent<Debugable>();
+            if (debugType == DebugType.Power) {
+                float[] args = new float[debugArgs.Length];
+                for (int i = 0; i < args.Length; i++) {
+                    args[i] = float.Parse((String)debugArgs[i]);
+                }
+                PowerObject powerScript = raycastHit.transform.gameObject.GetComponent<PowerObject>();
 
-            if (debugScript != null) {
-                debugScript.debug();
+                if (powerScript != null) {
+                    powerScript.changePower(args);
+                }
             }
         }
     }
 
+    public void enableDisableDebugingInteract(bool enable,DebugType debugType, params System.Object[] args) {
+        debugInteractEnabled = enable;
+        this.debugType = debugType;
+        debugArgs = args;
+    }
 
     // function to lift object
     void liftObjects()
@@ -285,12 +332,12 @@ public class FirstPersonScript : MonoBehaviour
 
     public void toggleNoClip()
     {
-        toggleNoClip(false);
+        toggleNoClip(!noClipEnabled,false);
     }
 
-    public void toggleNoClip(bool disableAutoRotate)
+    public void toggleNoClip(bool enable,bool disableAutoRotate)
     {
-        noClipEnabled = !noClipEnabled;
+        noClipEnabled = enable;
         gravityOnNormals.enableGravity = !noClipEnabled;
         playerCollider.enabled = !noClipEnabled;
         if (disableAutoRotate)
@@ -312,7 +359,48 @@ public class FirstPersonScript : MonoBehaviour
 
     public void toggleCheats()
     {
-        cheatsEnabled = !cheatsEnabled;
+        toggleCheats(!cheatsEnabled);
+    }
+
+    public void toggleCheats(bool enable) {
+        cheatsEnabled = enable;
+    }
+
+    public int findPropertyIndex(string property) {
+        for (int i = 0; i < propertys.Length; i++) {
+            if (propertys[i].Equals(property)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public bool hasProperty(string property) {
+        int propertyIndex = findPropertyIndex(property);
+        if (propertyIndex == -1) {
+            return false;
+        }
+        return true;
+    }
+
+    public void changeProperty(string property, string[] propertyValue) {
+        int propertyIndex = findPropertyIndex(property);
+        switch (propertyIndex) {
+            case 0:
+                gravityOnNormals.gravity = float.Parse(propertyValue[0]);
+                break;
+            case 1:
+                speed = float.Parse(propertyValue[0]);
+                break;
+        }
+
+    }
+
+    public string getName() {
+        return name;
     }
 
 }
+public enum DebugType { Power }
+
+public delegate void Action(bool isColliding);
