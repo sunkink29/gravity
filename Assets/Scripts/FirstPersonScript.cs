@@ -27,8 +27,8 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
     public CubeController liftObjectScript;
 
     // the script for the script that controls the gravity for the player
-    [SerializeField]
-    public GravityOnNormals gravityOnNormals = new GravityOnNormals();
+    [HideInInspector]
+    public ChangeGravityToNormals changeGravity;
 
     // A light on the player to light up the area
     Light spotlight;
@@ -50,15 +50,14 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
     public GameObject reticle;
     bool debugInteractEnabled = false;
     DebugType debugType;
-    System.Object[] debugArgs;
+    object[] debugArgs;
     string[] propertys = new string[] { "gravityStrength", "speed"};
 
     void Awake()
     {
-	    //Application.targetFrameRate = 20;
-	    // get gravity script
-	    gravityOnNormals.attachedPlayer = this;
-	    //gravityOnNormals = GetComponent<GravityOnNormals>();
+        //Application.targetFrameRate = 20;
+        // get gravity script
+        changeGravity = GetComponent<ChangeGravityToNormals>();
 
 	    // set up the camera rotator
 	    playerCamera = GameObject.FindWithTag("MainCamera");
@@ -77,7 +76,6 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
 
 	    player = this;
 	    playerCollider = GetComponent<Collider>();
-	    gravityOnNormals.Awake();
 
 	    // lock and hid the mouse
 	    if (!cursorHidden)
@@ -89,7 +87,6 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
     // Update is called once per frame
     void Update()
     {
-        gravityOnNormals.Update();
         // call the move and rotate helper fuctions
         //		move ();
 
@@ -139,14 +136,14 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
 
             if (hit)
             {
-                gravityOnNormals.currentDirection = hitInfo.normal;
+                changeGravity.objectGravity.currentDirection = -hitInfo.normal;
+                changeGravity.resetObjectRotation();
             }
         }
     }
 
     void FixedUpdate()
     {
-        gravityOnNormals.FixedUpdate();
         if (!disableMovement)
         {
             move();
@@ -288,7 +285,7 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
             liftObjectScript = liftObject.GetComponent<CubeController>();
 
             // check if the current gravity of the player is the same as the direction
-            if (liftObjectScript.gravityDirection == gravityOnNormals.currentDirection)
+            if (liftObjectScript.gravityDirection == changeGravity.objectGravity.currentDirection)
             {
 
                 // set the script to not use gravity
@@ -312,7 +309,7 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
         liftObjectScript.useGravity = true;
 
         // set the objects gravity to the players current gravity
-        liftObjectScript.gravityDirection = gravityOnNormals.currentDirection;
+        liftObjectScript.gravityDirection = changeGravity.objectGravity.currentDirection;
 
         // call the fuction in the object's script to drop the object
         liftObjectScript.dropObject();
@@ -338,15 +335,15 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
     public void toggleNoClip(bool enable,bool disableAutoRotate)
     {
         noClipEnabled = enable;
-        gravityOnNormals.enableGravity = !noClipEnabled;
+        changeGravity.objectGravity.enabled = !noClipEnabled;
         playerCollider.enabled = !noClipEnabled;
         if (disableAutoRotate)
         {
-            gravityOnNormals.disableAutoRotate = false;
+            //gravityOnNormals.disableAutoRotate = false;
         }
         else
         {
-            gravityOnNormals.disableAutoRotate = noClipEnabled;
+            //gravityOnNormals.disableAutoRotate = noClipEnabled;
         }
     }
 
@@ -387,7 +384,7 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
         int propertyIndex = findPropertyIndex(property);
         switch (propertyIndex) {
             case 0:
-                gravityOnNormals.gravity = float.Parse(propertyValue[0]);
+                changeGravity.objectGravity.gravityStrength = float.Parse(propertyValue[0]);
                 break;
             case 1:
                 speed = float.Parse(propertyValue[0]);

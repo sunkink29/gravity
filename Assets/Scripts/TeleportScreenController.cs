@@ -63,7 +63,9 @@ public class TeleportScreenController : MonoBehaviour {
         player.gameObject.transform.position = nextPanel.teleportPoint.transform.position;
         player.gameObject.transform.rotation = nextPanel.teleportPoint.transform.rotation;
         player.playerCamera.transform.rotation = new Quaternion(0, 0, 0, 0);
-        player.gravityOnNormals.rayCastGround();
+        RaycastHit hitInfo;
+        Physics.Raycast(player.transform.position, -player.transform.up, out hitInfo);
+        player.changeGravity.objectGravity.currentDirection = -hitInfo.normal;
         screenManager.CloseCurrent();
     }
 

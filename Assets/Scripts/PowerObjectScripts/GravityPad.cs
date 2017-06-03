@@ -17,7 +17,7 @@ public class GravityPad : PowerObject, FindPropertys {
     public override void Start() {
         base.Start();
         player = FirstPersonScript.player;
-        defaultGravity = player.gravityOnNormals.gravity;
+        defaultGravity = player.changeGravity.objectGravity.gravityStrength;
         gravity = defaultGravity;
         playerCollider = player.GetComponent<Collider>();
     }
@@ -27,14 +27,14 @@ public class GravityPad : PowerObject, FindPropertys {
             playerInTrigger = true;
             playerOnGround = player.isCollidingFloor;
             checkIfPlayerIsInTriggerAndOnGround();
-            player.CallWhenCollisionChange(collisionChange,true);
+            //player.CallWhenCollisionChange(collisionChange,true);
         }
     }
 
     void OnTriggerExit(Collider collider) {
         if (collider == playerCollider) {
             playerInTrigger = false;
-            player.CallWhenCollisionChange(collisionChange,false);
+            //player.CallWhenCollisionChange(collisionChange,false);
         }
     }
 
@@ -43,7 +43,7 @@ public class GravityPad : PowerObject, FindPropertys {
 		powerLight.changePower(powerArgs);
         if (powerArgs.Length >= 2 && powerArgs[1] > 0) {
             powered = true;
-            defaultGravity = player.gravityOnNormals.gravity;
+            defaultGravity = player.changeGravity.objectGravity.gravityStrength;
             gravity = powerArgs[1] * defaultGravity;
         } else {
             powered = false;
@@ -57,7 +57,8 @@ public class GravityPad : PowerObject, FindPropertys {
 
     void checkIfPlayerIsInTriggerAndOnGround() {
         if (!playerOnGround && playerInTrigger && powered) {
-            player.gravityOnNormals.turnToVector(gravityDirection);
+            player.changeGravity.objectGravity.currentDirection = gravityDirection;
+            player.changeGravity.resetObjectRotation();
         }
     }
 
