@@ -6,13 +6,13 @@ public class CubeButtonPowerObject : PowerProviderPowerObject, FindPropertys {
 	string[] propertys = {"power"};
 
 	void OnTriggerEnter (Collider collider) {
-		if (collider.gameObject.GetComponent<CubeController> () != null) {
+		if (collider.gameObject.GetComponent<LiftablePowerObject> () != null) {
 			base.changePower (new float[] { GetInstanceID (), 1 });
 		}
 	}
 
 	void OnTriggerExit (Collider collider) {
-		if (collider.gameObject.GetComponent<CubeController> () != null) {
+		if (collider.gameObject.GetComponent<LiftablePowerObject> () != null) {
 			base.changePower (new float[] { GetInstanceID (), 0 });
 		}
 	}

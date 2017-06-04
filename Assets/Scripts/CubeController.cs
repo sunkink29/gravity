@@ -8,7 +8,7 @@ public class CubeController : MonoBehaviour , Interactible {
 	public float gravityStrenth = 5f;
 	public float cubeMass = 10;
 	[HideInInspector]public Rigidbody objectRigidbody;
-	CubeSpringSettings cubeControllerSettings;
+	LiftableObjectSettings cubeControllerSettings;
 	SpringJoint springJoint;
 	public bool objectPickedUp = false;
 	FirstPersonScript playerScript;
@@ -47,28 +47,28 @@ public class CubeController : MonoBehaviour , Interactible {
 			if (objectRigidbody.isKinematic == true) {
 				objectRigidbody.isKinematic = false;
 			}
-			Vector3 heading = (playerCamera.position + playerCamera.forward * cubeControllerSettings.distanceFromObject) - transform.position;
-			float distance = heading.magnitude;
-			Vector3 direction = heading / distance;
-			objectRigidbody.AddForce (direction * cubeControllerSettings.force * distance, ForceMode.Acceleration);
+			//Vector3 heading = (playerCamera.position + playerCamera.forward * cubeControllerSettings.distanceFromObject) - transform.position;
+			//float distance = heading.magnitude;
+			//Vector3 direction = heading / distance;
+			//objectRigidbody.AddForce (direction * cubeControllerSettings.force * distance, ForceMode.Acceleration);
 
-			if (springJoint.maxDistance != cubeControllerSettings.distanceFromObject) {
-				springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
-				springJoint.minDistance = cubeControllerSettings.distanceFromObject;
-			}
-			if (springJoint.spring != cubeControllerSettings.spring) {
-				springJoint.spring = cubeControllerSettings.spring;
-			}
-			if (springJoint.damper != cubeControllerSettings.damper) {
-				springJoint.damper = cubeControllerSettings.damper;
-			}
-			if (objectRigidbody.drag != cubeControllerSettings.rigidbodyDrag) {
-				objectRigidbody.drag = cubeControllerSettings.rigidbodyDrag;
-			}
-			if (objectRigidbody.angularDrag != cubeControllerSettings.rigidbodyAnglarDrag) {
-				objectRigidbody.angularDrag = cubeControllerSettings.rigidbodyAnglarDrag;
-			}
-			transform.rotation = playerScript.transform.rotation;
+			//if (springJoint.maxDistance != cubeControllerSettings.distanceFromObject) {
+				//springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
+				//springJoint.minDistance = cubeControllerSettings.distanceFromObject;
+			//}
+			//if (springJoint.spring != cubeControllerSettings.spring) {
+				//springJoint.spring = cubeControllerSettings.spring;
+			//}
+			//if (springJoint.damper != cubeControllerSettings.damper) {
+				//springJoint.damper = cubeControllerSettings.damper;
+			//}
+			//if (objectRigidbody.drag != cubeControllerSettings.rigidbodyDrag) {
+				//objectRigidbody.drag = cubeControllerSettings.rigidbodyDrag;
+			//}
+			//if (objectRigidbody.angularDrag != cubeControllerSettings.rigidbodyAnglarDrag) {
+				//objectRigidbody.angularDrag = cubeControllerSettings.rigidbodyAnglarDrag;
+			//}
+			//transform.rotation = playerScript.transform.rotation;
 		}
 	}
 
@@ -107,29 +107,29 @@ public class CubeController : MonoBehaviour , Interactible {
 		if (player != playerScript) {
 			playerScript = player;
 			playerCamera = player.playerCamera.transform;
-			cubeControllerSettings = player.cubeControllerSetting;
+			cubeControllerSettings = player.liftableObjectSettings;
 		}
 		RaycastHit hit;
 		transform.position = playerCamera.transform.position + playerCamera.transform.up * .5f;
 		springJoint = gameObject.AddComponent<SpringJoint> ();
 		springJoint.connectedBody = player.GetComponent<Rigidbody> ();
-		springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
-		springJoint.minDistance = cubeControllerSettings.distanceFromObject;
-		springJoint.spring = cubeControllerSettings.spring;
-		springJoint.damper = cubeControllerSettings.damper;
-		objectRigidbody.drag = cubeControllerSettings.rigidbodyDrag;
-		objectRigidbody.angularDrag = cubeControllerSettings.rigidbodyAnglarDrag;
-		if (objectRigidbody.SweepTest (playerCamera.transform.forward, out hit, cubeControllerSettings.distanceFromObject)) {
-			transform.position += playerCamera.transform.forward * hit.distance;
-		} else {
-			transform.position += playerCamera.transform.forward * cubeControllerSettings.distanceFromObject;
-		}
+		//springJoint.maxDistance = cubeControllerSettings.distanceFromObject;
+		//springJoint.minDistance = cubeControllerSettings.distanceFromObject;
+		//springJoint.spring = cubeControllerSettings.spring;
+		//springJoint.damper = cubeControllerSettings.damper;
+		//objectRigidbody.drag = cubeControllerSettings.rigidbodyDrag;
+		//objectRigidbody.angularDrag = cubeControllerSettings.rigidbodyAnglarDrag;
+		//if (objectRigidbody.SweepTest (playerCamera.transform.forward, out hit, cubeControllerSettings.distanceFromObject)) {
+			//transform.position += playerCamera.transform.forward * hit.distance;
+		//} else {
+			//transform.position += playerCamera.transform.forward * cubeControllerSettings.distanceFromObject;
+		//}
 
 		objectPickedUp = true;
 		useGravity = false;
 		gameObject.layer = 9;
 		player.objectPickedUp = true;
-		player.liftObjectScript = this;
+		//player.liftableObject = this;
 	}
 
 	public void dropObject () {
@@ -142,7 +142,8 @@ public class CubeController : MonoBehaviour , Interactible {
 	}
 
 	public void interact() {
-		if (interactible) {
+        print("replace cubeController with new liftableObject script");
+		if (interactible && false) {
 			if (!objectPickedUp) {
 				pickUpObject (FirstPersonScript.player);
 			} else {

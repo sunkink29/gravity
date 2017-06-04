@@ -15,16 +15,15 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
     // the speed that the player moves at in units per second
     public float speed = 15;
 
-    // the settings for the cube's spring
+    // the settings for the cube
     [SerializeField]
-    public CubeSpringSettings cubeControllerSetting = new CubeSpringSettings();
+    public LiftableObjectSettings liftableObjectSettings = new LiftableObjectSettings();
 
     // A variable to keep track of whether an object is picked up or not
     public bool objectPickedUp = false;
 
     // the object the is currently picked up or the last object that was picked up
-    public GameObject liftObject;
-    public CubeController liftObjectScript;
+    public LiftableObject liftableObject;
 
     // the script for the script that controls the gravity for the player
     [HideInInspector]
@@ -224,23 +223,9 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
 		}
 		if (Input.GetButtonDown ("Interact")) {
 			if (objectPickedUp) {
-				liftObjectScript.interact ();
+				liftableObject.interact ();
 			} else if (hit) {
-
-				interactScript = raycastHit.transform.gameObject.GetComponent<Interactible> ();
-				Vector3 objectRotation;
-
-				if (hit && raycastHit.transform.gameObject.tag == "liftable") {
-					if (!objectPickedUp) {
-
-						// if an object is not pick up call the fuction to pick it up
-						liftObjects ();
-					} else {
-
-						// if an object is picked up call the fuction to drop it
-						dropObject ();
-					}
-				} else if (interactScript != null) {
+				if (interactScript != null) {
 					interactScript.interact ();
 				}
 			}
@@ -262,64 +247,13 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
         }
     }
 
-    public void enableDisableDebugingInteract(bool enable,DebugType debugType, params System.Object[] args) {
+    public void enableDisableDebugingInteract(bool enable, DebugType debugType, params System.Object[] args) {
         debugInteractEnabled = enable;
         this.debugType = debugType;
         debugArgs = args;
     }
 
-    // function to lift object
-    void liftObjects()
-    {
-
-        // raycast to get the object in front of the player
-        RaycastHit raycastHit;
-        bool hit = Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out raycastHit);
-
-        // check if the object is liftable
-        if (hit && raycastHit.transform.gameObject.tag == "liftable")
-        {
-
-            // set the racast gameObject to a variable and get the cubeController
-            liftObject = raycastHit.transform.gameObject;
-            liftObjectScript = liftObject.GetComponent<CubeController>();
-
-            // check if the current gravity of the player is the same as the direction
-            if (liftObjectScript.gravityDirection == changeGravity.objectGravity.currentDirection)
-            {
-
-                // set the script to not use gravity
-                liftObjectScript.useGravity = false;
-
-                // set objectPickedUp to true so the player script knows that an object is picked up 
-                objectPickedUp = true;
-
-                // call a fuction in the object's script to be picked up
-                liftObjectScript.pickUpObject(this);
-            }
-        }
-    }
-
-
-    // fuction to drop object
-    void dropObject()
-    {
-
-        // tell the object to use gravity
-        liftObjectScript.useGravity = true;
-
-        // set the objects gravity to the players current gravity
-        liftObjectScript.gravityDirection = changeGravity.objectGravity.currentDirection;
-
-        // call the fuction in the object's script to drop the object
-        liftObjectScript.dropObject();
-
-        // set objectPickedUp to false so the player script knows that an object is not picked up 
-        objectPickedUp = false;
-    }
-
-    public void pauseGame()
-    {
+    public void pauseGame() {
         gamePaused = !gamePaused;
         disableMovement = gamePaused;
         rotatePlayer = !gamePaused;
@@ -327,35 +261,29 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
         reticle.SetActive(!gamePaused);
     }
 
-    public void toggleNoClip()
-    {
+    public void toggleNoClip() {
         toggleNoClip(!noClipEnabled,false);
     }
 
-    public void toggleNoClip(bool enable,bool disableAutoRotate)
-    {
+    public void toggleNoClip(bool enable,bool disableAutoRotate) {
         noClipEnabled = enable;
         changeGravity.objectGravity.enabled = !noClipEnabled;
         playerCollider.enabled = !noClipEnabled;
-        if (disableAutoRotate)
-        {
+        if (disableAutoRotate) {
             //gravityOnNormals.disableAutoRotate = false;
         }
-        else
-        {
+        else {
             //gravityOnNormals.disableAutoRotate = noClipEnabled;
         }
     }
 
-    public void lockCursor(bool hidden)
-    {
+    public void lockCursor(bool hidden) {
         cursorHidden = hidden;
         Cursor.visible = !cursorHidden;
         Cursor.lockState = cursorHidden ? CursorLockMode.Locked : CursorLockMode.None;
     }
 
-    public void toggleCheats()
-    {
+    public void toggleCheats() {
         toggleCheats(!cheatsEnabled);
     }
 
