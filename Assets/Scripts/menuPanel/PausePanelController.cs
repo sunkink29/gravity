@@ -38,7 +38,7 @@ public class PausePanelController : MonoBehaviour, Interactible {
         RaycastHit raycastHit;
         bool hit = Physics.Raycast(teleportPoint.transform.position, -teleportPoint.transform.up, out raycastHit);
         //player.gravityOnNormals.rayCastGround();
-        if (hit && raycastHit.normal == player.changeGravity.objectGravity.currentDirection)
+        if (hit && -raycastHit.normal == player.changeGravity.objectGravity.currentDirection)
         {
             player.pauseGame();
             if (player.gamePaused)
