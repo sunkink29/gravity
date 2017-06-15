@@ -121,7 +121,7 @@ public class ConsoleCommandRouter : MonoBehaviour
                     target = (FindPropertys)UnityEditor.EditorUtility.InstanceIDToObject(int.Parse(stringTarget));
                     break;
 #else
-                    error = "Can not Find innstance id inside a standalone build"
+                    error = "Can not Find innstance id inside a standalone build";
                     break;
 #endif
                 case 2:

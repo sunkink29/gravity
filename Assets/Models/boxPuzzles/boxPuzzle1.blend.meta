@@ -6,14 +6,23 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: boxPuzzle1
+    100004: ramp
     400000: //RootNode
+    400002: boxPuzzle1
+    400004: ramp
     2300000: //RootNode
+    2300002: boxPuzzle1
+    2300004: ramp
     3300000: //RootNode
+    3300002: boxPuzzle1
+    3300004: ramp
     4300000: boxPuzzle1
+    4300002: ramp
     7400000: Default Take
     9500000: //RootNode
   materials:
-    importMaterials: 1
+    importMaterials: 0
     materialName: 0
     materialSearch: 1
   animations:
