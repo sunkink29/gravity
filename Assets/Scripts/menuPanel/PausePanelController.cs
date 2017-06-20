@@ -29,7 +29,9 @@ public class PausePanelController : MonoBehaviour, Interactible {
         player = FirstPersonScript.player;
         if (defaltPanel)
         {
-            interact();
+            player.pauseGame();
+            teleport(this);
+            screenManager.OpenPanel(defaltScreen);
         }
 	}
 
@@ -38,7 +40,7 @@ public class PausePanelController : MonoBehaviour, Interactible {
         RaycastHit raycastHit;
         bool hit = Physics.Raycast(teleportPoint.transform.position, -teleportPoint.transform.up, out raycastHit);
         //player.gravityOnNormals.rayCastGround();
-        if (hit && -raycastHit.normal == player.changeGravity.objectGravity.currentDirection)
+        if (hit && Vector3.Angle(-raycastHit.normal, player.changeGravity.objectGravity.currentDirection) < 90)
         {
             player.pauseGame();
             if (player.gamePaused)

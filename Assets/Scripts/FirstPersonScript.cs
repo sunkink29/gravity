@@ -224,6 +224,8 @@ public class FirstPersonScript : MonoBehaviour, FindPropertys
 		if (Input.GetButtonDown ("Interact")) {
 			if (objectPickedUp) {
 				liftableObject.interact ();
+                liftableObject.changeGravity(changeGravity.objectGravity.currentDirection);
+                liftableObject = null;
 			} else if (hit) {
 				if (interactScript != null) {
 					interactScript.interact ();

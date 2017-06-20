@@ -11,13 +11,18 @@ public class StandingButtonPowerObject : PowerProviderPowerObject, Interactible 
 	public override void Start ()
 	{
 		base.Start ();
+        animator.SetBool("toggleButton", toggleButton);
 	}
 
 	public void interact () {
-		supplyPower = !supplyPower;
-		base.changePower(new float[]{this.GetInstanceID(),Convert.ToInt32(supplyPower)});
+        if (toggleButton)
+            supplyPower = !supplyPower;
+        else
+            supplyPower = true;
+        base.changePower(new float[]{this.GetInstanceID(),Convert.ToInt32(supplyPower)});
 		if (animator != null) {
 			animator.SetBool("ButtonPressed", supplyPower);
+            animator.SetTrigger("pressButton");
 		}
 	}
 }

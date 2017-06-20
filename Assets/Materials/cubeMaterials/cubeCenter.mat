@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: testWireShader
-  m_Shader: {fileID: 4800000, guid: 138323d671727473d90c1a7998aecd32, type: 3}
+  m_Name: cubeCenter
+  m_Shader: {fileID: 4800000, guid: 573432396861a4f818137de64f4d6041, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -80,17 +80,8 @@ Material:
         name: _DetailNormalMapScale
       second: 1
     - first:
-        name: _Distance
-      second: -0.15
-    - first:
         name: _DstBlend
       second: 0
-    - first:
-        name: _EmissionStrength
-      second: 1
-    - first:
-        name: _FalloutDistance
-      second: 0.1
     - first:
         name: _Glossiness
       second: 0.5
@@ -113,21 +104,12 @@ Material:
         name: _UVSec
       second: 0
     - first:
-        name: _WireStart
-      second: -0.5
-    - first:
         name: _ZWrite
       second: 1
     m_Colors:
     - first:
         name: _Color
-      second: {r: 1, g: 1, b: 0.007843138, a: 1}
+      second: {r: 0, g: 0.1764706, b: 0.4627451, a: 1}
     - first:
         name: _EmissionColor
-      second: {r: 1, g: 1, b: 0.007843138, a: 1}
-    - first:
-        name: _VectorDirection
-      second: {r: 1, g: 0, b: 0, a: 1}
-    - first:
-        name: _WireStart
-      second: {r: -0.5, g: 0, b: 0, a: 0}
+      second: {r: 0, g: 0.2784314, b: 0.7372549, a: 1}

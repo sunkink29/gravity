@@ -69,6 +69,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - first:
+        name: _SpecGlossMap
+      second:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - first:
         name: _BumpScale
@@ -80,8 +86,17 @@ Material:
         name: _DetailNormalMapScale
       second: 1
     - first:
+        name: _Distance
+      second: 0.98
+    - first:
         name: _DstBlend
       second: 0
+    - first:
+        name: _EmissionStrength
+      second: 1
+    - first:
+        name: _FalloutDistance
+      second: 0.43
     - first:
         name: _Glossiness
       second: 0.5
@@ -109,7 +124,16 @@ Material:
     m_Colors:
     - first:
         name: _Color
-      second: {r: 1, g: 1, b: 0.007843138, a: 1}
+      second: {r: 1, g: 1, b: 0, a: 1}
     - first:
         name: _EmissionColor
-      second: {r: 1, g: 1, b: 0.007843256, a: 1}
+      second: {r: 1, g: 1, b: 0.007843137, a: 1}
+    - first:
+        name: _SpecColor
+      second: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - first:
+        name: _VectorDirection
+      second: {r: 1, g: 1, b: 1, a: 1}
+    - first:
+        name: _WireStart
+      second: {r: -1, g: 0, b: 0, a: 1}

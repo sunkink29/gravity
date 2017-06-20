@@ -6,9 +6,8 @@ public class WireControllerPowerObject : PowerProviderPowerObject, FindPropertys
 	Collider currentCollider;
 	[SerializeField] bool isPowered;
 	Renderer objectRenderer;
-	public Transform startPoint;
-	public Transform endPoint;
 	public float speed = .1f;
+    float falloutDistance;
 	Color baseColor;
 	Material mat;
 	float currentPoint;
@@ -32,8 +31,8 @@ public class WireControllerPowerObject : PowerProviderPowerObject, FindPropertys
 			mat = objectRenderer.material;
 		}
 		baseColor = mat.GetColor ("_EmissionColor");
-		mat.SetVector ("_WireStart", startPoint.position);
-		mat.SetFloat ("_Distance", 0);
+        falloutDistance = mat.GetFloat("_FalloutDistance");
+		mat.SetFloat ("_Distance", 0 - falloutDistance);
 		DynamicGI.UpdateMaterials (objectRenderer);
 		base.Start();
 	}
@@ -42,13 +41,15 @@ public class WireControllerPowerObject : PowerProviderPowerObject, FindPropertys
 		currentPowerArgs = powerArgs;
 		if (powerArgs.Length >= 2 && powerArgs [1] >= 1) {
 			if (isPowered == false) {
-				coroutine = LerpCoroutine.LerpMinToMax (Vector3.Distance (startPoint.position, endPoint.position) * speed, 0,
-					Vector3.Distance (startPoint.position, endPoint.position), currentPoint, changeWireDistance, false);
+				coroutine = LerpCoroutine.LerpMinToMax (transform.lossyScale.x * speed * (1 + falloutDistance),
+                    0 - falloutDistance, 1, currentPoint, changeWireDistance, false);
 			}
 			isPowered = true;
 		} else {
+            if (coroutine != null)
+                LerpCoroutine.stopCoroutine(coroutine);
 			isPowered = false;
-			changeWireDistance(0);
+			changeWireDistance(0 - falloutDistance);
 			powerArgs = new float[] {GetInstanceID(), 0};
 			base.changePower(powerArgs);
 		}
@@ -58,7 +59,7 @@ public class WireControllerPowerObject : PowerProviderPowerObject, FindPropertys
 		mat.SetFloat ("_Distance", distance);
 		DynamicGI.UpdateMaterials (objectRenderer);
 		currentPoint = distance;
-		if (distance / Vector3.Distance (startPoint.position, endPoint.position) == 1) {
+		if (distance == 1) {
 			base.changePower(currentPowerArgs);
 		}
 	}

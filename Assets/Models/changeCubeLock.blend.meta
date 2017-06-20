@@ -1,44 +1,24 @@
 fileFormatVersion: 2
-guid: 619160c709d69914bad674fd90eeebde
-timeCreated: 1497468386
+guid: 310bf65b61ec2004f92966e979676b9d
+timeCreated: 1497672569
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
-    100002: center
-    100004: centerCube
-    100006: cubeWire
-    100008: cubeWireOutside
-    100010: boxWire
+    100002: wire
     400000: //RootNode
-    400002: center
-    400004: centerCube
-    400006: cubeWire
-    400008: cubeWireOutside
-    400010: boxWire
+    400002: wire
     2300000: //RootNode
-    2300002: center
-    2300004: centerCube
-    2300006: cubeWire
-    2300008: cubeWireOutside
-    2300010: boxWire
+    2300002: wire
     3300000: //RootNode
-    3300002: center
-    3300004: centerCube
-    3300006: cubeWire
-    3300008: cubeWireOutside
-    3300010: boxWire
+    3300002: wire
     4300000: Cube
-    4300002: center
-    4300004: centerCube
-    4300006: cubeWire
-    4300008: cubeWireOutside
-    4300010: boxWire
+    4300002: wire
     7400000: Default Take
     9500000: //RootNode
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:

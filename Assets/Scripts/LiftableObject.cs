@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +8,11 @@ public class LiftableObject : MonoBehaviour, Interactible {
 
     GameObject playerCamera;
     protected Gravity objectGravity;
-    protected Rigidbody rb;
+    public Rigidbody rb;
     bool held;
     bool outsideBoundery = true;
     LiftableObjectSettings settings;
+    List<Method> callWhenDroppedMethods = new List<Method>();
 
 	// Use this for initialization
 	protected void Start () {
@@ -43,7 +45,39 @@ public class LiftableObject : MonoBehaviour, Interactible {
         objectGravity.enabled = !held;
         FirstPersonScript.player.objectPickedUp = held;
         FirstPersonScript.player.liftableObject = this;
+        if (held == false) {
+            for (int i = 0; i < callWhenDroppedMethods.Count; i++) {
+                callWhenDroppedMethods[i]();
+            }
+            callWhenDroppedMethods.Clear();
+        } else {
+            rb.mass = settings.mass;
+        }
     } 
 
+    public void changeGravity(Vector3 newDirection) {
+        objectGravity.changeGravity(newDirection);
+    }
 
+    public void callWhenDropped(Method method) {
+        callWhenDroppedMethods.Add(method);
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+        if (-collision.contacts[0].normal == objectGravity.currentDirection && rb != null && settings != null)
+            rb.mass = settings.defaltMass;
+    }
+
+}
+
+public delegate void Method();
+
+[Serializable]
+public class LiftableObjectSettings {
+    public float distanceToTarget = 1.5f;
+    public float power = 1600;
+    public float distanceFromCamera = 3;
+    public float defaltDrag = 1;
+    public float defaltMass = 40;
+    public float mass = 10;
 }
